@@ -30,6 +30,7 @@ public class GaragesApiApplication implements CommandLineRunner {
 
         Garage garageCasa = new Garage();
         garageCasa.setName("Renault Ainsbaa");
+        garageCasa.setCity("Casablanca");
         garageCasa.setAddress("JF28+FJ9, Bd Ali Yaâta, Casablanca 20250");
         garageCasa.setTelephone("0522562252");
         garageCasa.setEmail("ainsebaa@renault.ma");

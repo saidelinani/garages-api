@@ -1,14 +1,15 @@
 package com.renault.garagesapi.service;
 
 
+import com.renault.garagesapi.dto.AccessoireDto;
 import com.renault.garagesapi.entity.Accessoire;
 import java.util.List;
 
 public interface IAccessoireService {
 
-    Accessoire addAccessoire(Accessoire accessoire);
-    Accessoire addAccessoireToVehicule(Long vehiculeId, Accessoire accessoire);
-    Accessoire updateAccessoire(Long id, Accessoire accessoire);
+    AccessoireDto addAccessoire(AccessoireDto accessoire);
+    AccessoireDto addAccessoireToVehicule(Long vehiculeId, AccessoireDto accessoireDto);
+    AccessoireDto updateAccessoire(Long id, AccessoireDto accessoireDto);
     void deleteAccessoire(Long id);
-    List<Accessoire> getAccessoiresByVehicule(Long vehiculeId);
+    List<AccessoireDto> getAccessoiresByVehicule(Long vehiculeId);
 }
