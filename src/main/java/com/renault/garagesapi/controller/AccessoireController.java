@@ -3,6 +3,8 @@ package com.renault.garagesapi.controller;
 import com.renault.garagesapi.dto.AccessoireDto;
 import com.renault.garagesapi.service.IAccessoireService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,14 +40,40 @@ public class AccessoireController {
     }
 
     @DeleteMapping("/{idAccessoire}")
-    public void deleteAccessoire(@PathVariable Long idAccessoire) {
+    public ResponseEntity<Void> deleteAccessoire(@PathVariable Long idAccessoire) {
         accessoireService.deleteAccessoire(idAccessoire);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{idVehicule}")
+    @GetMapping
+    public ResponseEntity<Page<AccessoireDto>> getAllAccessoires(Pageable pageable) {
+
+        Page<AccessoireDto> accessoires = accessoireService.getAllAccessoires(pageable);
+        return ResponseEntity.ok(accessoires);
+    }
+
+    @GetMapping("/vehicule/{idVehicule}")
     public ResponseEntity<List<AccessoireDto>> getAccessoiresByVehicule(@PathVariable Long idVehicule) {
 
         List<AccessoireDto> accessoires = accessoireService.getAccessoiresByVehicule(idVehicule);
         return ResponseEntity.ok(accessoires);
+    }
+
+    @PostMapping("/vehicule/{vehiculeId}")
+    public ResponseEntity<AccessoireDto> addAccessoireToVehicule(
+                    @PathVariable Long vehiculeId,
+                    @Valid @RequestBody AccessoireDto accessoireDto) {
+
+        AccessoireDto saved = accessoireService.addAccessoireToVehicule(vehiculeId, accessoireDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
+
+    @PostMapping("/vehicule/{vehiculeId}/accessoire/{accessoireId}")
+    public ResponseEntity<Void> attachAccessoireToVehicule(
+                    @PathVariable Long vehiculeId,
+                    @PathVariable Long accessoireId) {
+
+        accessoireService.attachAccessoireToVehicule(accessoireId, vehiculeId);
+        return ResponseEntity.ok().build();
     }
 }

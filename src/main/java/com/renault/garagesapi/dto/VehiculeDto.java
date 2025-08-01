@@ -1,5 +1,7 @@
 package com.renault.garagesapi.dto;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +20,6 @@ public record VehiculeDto(
 		@NotBlank(message = "Le type de carburant est obligatoire")
 		String typeCarburant,
 
-		// Todo
-		@NotNull(message = "La liste des accessoires ne doit pas être nulle")
+		@JsonSetter(nulls = Nulls.AS_EMPTY)
 		List<@Valid AccessoireDto> accessoires
 ) {}

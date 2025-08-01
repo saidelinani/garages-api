@@ -3,12 +3,15 @@ package com.renault.garagesapi.service.impl;
 import com.renault.garagesapi.dto.AccessoireDto;
 import com.renault.garagesapi.entity.Accessoire;
 import com.renault.garagesapi.entity.Vehicule;
+import com.renault.garagesapi.exception.AccessoryAlreadyAssignedException;
 import com.renault.garagesapi.exception.ResourceNotFoundException;
 import com.renault.garagesapi.mapper.AccessoireMapper;
 import com.renault.garagesapi.mapper.VehiculeMapper;
 import com.renault.garagesapi.repository.AccessoireRepository;
 import com.renault.garagesapi.service.IAccessoireService;
 import com.renault.garagesapi.service.IVehiculeService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,6 +79,12 @@ public class AccessoireServiceImpl implements IAccessoireService {
     }
 
     @Override
+    public Page<AccessoireDto> getAllAccessoires(Pageable pageable) {
+        return accessoireRepository.findAll(pageable)
+                        .map(accessoireMapper::toDto);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<AccessoireDto> getAccessoiresByVehicule(Long vehiculeId) {
 
@@ -89,5 +98,23 @@ public class AccessoireServiceImpl implements IAccessoireService {
     private Accessoire findAccessoireById(Long id) {
         return accessoireRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Accessoire non trouvé"));
+    }
+
+    @Transactional
+    @Override public void attachAccessoireToVehicule(Long accessoireId, Long vehiculeId) {
+
+        Vehicule vehicule = vehiculeMapper.toEntity(vehiculeService.getVehiculeById(vehiculeId));
+
+        Accessoire accessoire = findAccessoireById(accessoireId);
+
+        // Vérifier si l'accessoire n'est pas déjà associé à un véhicule
+        if (accessoire.getVehicule() != null) {
+            throw new AccessoryAlreadyAssignedException("L'accessoire est déjà associé au véhicule avec l'ID " +
+                            accessoire.getVehicule().getId());
+        }
+
+        accessoire.setVehicule(vehicule);
+
+        accessoireRepository.save(accessoire);
     }
 }

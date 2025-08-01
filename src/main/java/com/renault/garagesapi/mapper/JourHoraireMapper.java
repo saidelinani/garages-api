@@ -5,7 +5,7 @@ import com.renault.garagesapi.entity.JourHoraire;
 import org.mapstruct.Mapper;
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = OpeningTimeMapper.class)
 public interface JourHoraireMapper {
 
     JourHoraireDto toDto(JourHoraire jourHoraire);

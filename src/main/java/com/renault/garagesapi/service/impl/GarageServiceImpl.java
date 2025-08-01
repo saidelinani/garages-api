@@ -2,6 +2,7 @@ package com.renault.garagesapi.service.impl;
 
 import com.renault.garagesapi.dto.GarageDto;
 import com.renault.garagesapi.entity.Garage;
+import com.renault.garagesapi.entity.JourHoraire;
 import com.renault.garagesapi.exception.BusinessException;
 import com.renault.garagesapi.exception.ResourceNotFoundException;
 import com.renault.garagesapi.mapper.GarageMapper;
@@ -10,6 +11,8 @@ import com.renault.garagesapi.service.IGarageService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class GarageServiceImpl implements IGarageService {
@@ -26,6 +29,11 @@ public class GarageServiceImpl implements IGarageService {
     public GarageDto addGarage(GarageDto garageDto) {
 
         Garage garage = garageMapper.toEntity(garageDto);
+
+        for (JourHoraire jourHoraire : garage.getHorairesOuverture()) {
+            jourHoraire.setGarage(garage);
+        }
+
         Garage savedGarage = garageRepository.save(garage);
         return garageMapper.toDto(savedGarage);
     }
@@ -70,7 +78,8 @@ public class GarageServiceImpl implements IGarageService {
         return garageRepository.findAll().size();
     }
 
-    private Garage findGarageById(Long id) {
+    @Override
+    public Garage findGarageById(Long id) {
         return garageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Garage non trouvé"));
     }

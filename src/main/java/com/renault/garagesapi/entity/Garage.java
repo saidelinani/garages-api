@@ -38,6 +38,6 @@ public class Garage {
     @OneToMany(mappedBy = "garage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JourHoraire> horairesOuverture = new ArrayList<>();
 
-    @OneToMany(mappedBy = "garage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "garage", cascade = CascadeType.PERSIST)
     private List<Vehicule> vehicules = new ArrayList<>();
 }

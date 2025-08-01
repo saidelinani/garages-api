@@ -12,6 +12,6 @@ public record JourHoraireDto(
 		DayOfWeek jour,
 
 		// TOdo
-		@NotEmpty(message = "La liste des horaires ne doit pas être vide")
-		List<@Valid OpeningTimeDto> horaires
+		@NotEmpty(message = "La liste des creneaux ne doit pas être vide")
+		List<@Valid OpeningTimeDto> creneaux
 ) {}

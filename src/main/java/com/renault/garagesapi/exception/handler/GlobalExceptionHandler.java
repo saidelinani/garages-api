@@ -1,20 +1,19 @@
 package com.renault.garagesapi.exception.handler;
 
+import com.renault.garagesapi.exception.AccessoryAlreadyAssignedException;
+import com.renault.garagesapi.exception.GarageFullException;
 import com.renault.garagesapi.exception.ResourceNotFoundException;
 import com.renault.garagesapi.exception.dto.ErrorResponse;
 import com.renault.garagesapi.exception.dto.ValidationErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -71,10 +70,40 @@ public class GlobalExceptionHandler {
                 getPath(request)
         );
 
-        // Log de l'erreur pour le débogage (optionnel)
+        // Todo: to remove
         ex.printStackTrace();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AccessoryAlreadyAssignedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessoryAlreadyAssigned(
+		    AccessoryAlreadyAssignedException ex,
+		    WebRequest request) {
+
+        ErrorResponse errorResponse = ErrorResponse.of(
+                        ex.getMessage(),
+                        HttpStatus.CONFLICT.value(),
+                        "Conflict",
+                        getPath(request)
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(GarageFullException.class)
+    public ResponseEntity<ErrorResponse> handleGarageFullException(
+            GarageFullException ex,
+            WebRequest request) {
+
+        ErrorResponse errorResponse = ErrorResponse.of(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Bad Request",
+                getPath(request)
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     private String getPath(WebRequest request) {

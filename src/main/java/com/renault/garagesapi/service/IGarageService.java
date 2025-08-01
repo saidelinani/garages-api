@@ -12,6 +12,7 @@ public interface IGarageService {
     GarageDto updateGarage(Long id, GarageDto garage);
     void deleteGarage(Long id);
     public GarageDto getGarageById(Long id);
+    public Garage findGarageById(Long id);
     Page<GarageDto> getAllGarages(Pageable pageable);
     int getNombreVehicules(Long garageId);
 }
