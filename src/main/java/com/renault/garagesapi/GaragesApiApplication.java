@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +32,7 @@ public class GaragesApiApplication implements CommandLineRunner {
         Garage garageCasa = new Garage();
         garageCasa.setName("Renault Ainsbaa");
         garageCasa.setCity("Casablanca");
-        garageCasa.setAddress("JF28+FJ9, Bd Ali Yaâta, Casablanca 20250");
+        garageCasa.setAddress("Bd Ali Yaâta, Casablanca 20250");
         garageCasa.setTelephone("0522562252");
         garageCasa.setEmail("ainsebaa@renault.ma");
 
@@ -49,7 +50,7 @@ public class GaragesApiApplication implements CommandLineRunner {
 
         Vehicule vehicule1 = new Vehicule();
         vehicule1.setBrand("Golf 8");
-        vehicule1.setAnneeFabrication(2018);
+        vehicule1.setAnneeFabrication(Year.of(2018));
         vehicule1.setTypeCarburant(TypeCarburant.ESSENCE);
         vehicule1.setGarage(garageCasa);
         accessoire1.setVehicule(vehicule1);

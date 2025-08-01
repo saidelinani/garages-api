@@ -1,11 +1,20 @@
-package com.renault.garagesapi.exception;
+package com.renault.garagesapi.exception.handler;
 
+import com.renault.garagesapi.exception.ResourceNotFoundException;
 import com.renault.garagesapi.exception.dto.ErrorResponse;
+import com.renault.garagesapi.exception.dto.ValidationErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -23,6 +32,49 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationErrorResponse> handleValidationErrors(
+            MethodArgumentNotValidException ex,
+            WebRequest request) {
+
+        Map<String, String> fieldErrors = new HashMap<>();
+
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            String fieldName = error.getField();
+            String errorMessage = error.getDefaultMessage();
+            fieldErrors.put(fieldName, errorMessage);
+        });
+
+        ValidationErrorResponse errorResponse = new ValidationErrorResponse(
+                "Erreurs de validation",
+                HttpStatus.BAD_REQUEST.value(),
+                "Bad Request",
+                LocalDateTime.now(),
+                getPath(request),
+                fieldErrors
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGlobalException(
+            Exception ex,
+            WebRequest request) {
+
+        ErrorResponse errorResponse = ErrorResponse.of(
+                "Une erreur interne s'est produite",
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Internal server error",
+                getPath(request)
+        );
+
+        // Log de l'erreur pour le débogage (optionnel)
+        ex.printStackTrace();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private String getPath(WebRequest request) {
