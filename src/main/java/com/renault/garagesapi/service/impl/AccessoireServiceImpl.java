@@ -9,9 +9,11 @@ import com.renault.garagesapi.mapper.VehiculeMapper;
 import com.renault.garagesapi.repository.AccessoireRepository;
 import com.renault.garagesapi.service.IAccessoireService;
 import com.renault.garagesapi.service.IVehiculeService;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AccessoireServiceImpl implements IAccessoireService {
@@ -74,8 +76,14 @@ public class AccessoireServiceImpl implements IAccessoireService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AccessoireDto> getAccessoiresByVehicule(Long vehiculeId) {
-        return List.of();
+
+        List<Accessoire> accessoires = accessoireRepository.findByVehiculeId(vehiculeId);
+
+        return accessoires.stream()
+                .map(accessoireMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     private Accessoire findAccessoireById(Long id) {
