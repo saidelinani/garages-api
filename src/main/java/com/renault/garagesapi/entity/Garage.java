@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
@@ -35,9 +36,11 @@ public class Garage {
     @Column(nullable = false)
     private String email;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "garage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JourHoraire> horairesOuverture = new ArrayList<>();
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "garage", cascade = CascadeType.PERSIST)
     private List<Vehicule> vehicules = new ArrayList<>();
 }
