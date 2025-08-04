@@ -33,7 +33,7 @@ public class GarageController {
     }
 
     @GetMapping("/{idGarage}")
-    public ResponseEntity<GarageDto> getAllGarageById(@PathVariable Long idGarage) {
+    public ResponseEntity<GarageDto> getGarageById(@PathVariable Long idGarage) {
 
         return ResponseEntity.ok(garageService.getGarageById(idGarage));
     }

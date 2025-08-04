@@ -2,6 +2,7 @@ package com.renault.garagesapi.exception.handler;
 
 import com.renault.garagesapi.exception.AccessoryAlreadyAssignedException;
 import com.renault.garagesapi.exception.GarageFullException;
+import com.renault.garagesapi.exception.GarageHasVehiclesException;
 import com.renault.garagesapi.exception.ResourceNotFoundException;
 import com.renault.garagesapi.exception.dto.ErrorResponse;
 import com.renault.garagesapi.exception.dto.ValidationErrorResponse;
@@ -53,6 +54,21 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 getPath(request),
                 fieldErrors
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(GarageHasVehiclesException.class)
+    public ResponseEntity<ErrorResponse> handleGarageHasVehiclesException(
+            GarageHasVehiclesException ex,
+            WebRequest request) {
+
+        ErrorResponse errorResponse = ErrorResponse.of(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Bad Request",
+                getPath(request)
         );
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

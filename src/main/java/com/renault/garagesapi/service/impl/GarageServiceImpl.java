@@ -4,6 +4,7 @@ import com.renault.garagesapi.dto.GarageDto;
 import com.renault.garagesapi.entity.Garage;
 import com.renault.garagesapi.entity.JourHoraire;
 import com.renault.garagesapi.exception.BusinessException;
+import com.renault.garagesapi.exception.GarageHasVehiclesException;
 import com.renault.garagesapi.exception.ResourceNotFoundException;
 import com.renault.garagesapi.mapper.GarageMapper;
 import com.renault.garagesapi.repository.GarageRepository;
@@ -56,7 +57,7 @@ public class GarageServiceImpl implements IGarageService {
         Garage existingGarage = findGarageById(id);
 
         if (!existingGarage.getVehicules().isEmpty()) {
-            throw new BusinessException("Impossible de supprimer un garage contenant des véhicules");
+            throw new GarageHasVehiclesException("Impossible de supprimer un garage contenant des véhicules");
         }
 
         garageRepository.deleteById(id);
