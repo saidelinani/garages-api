@@ -1,4 +1,4 @@
-package com.renault.garagesapi.kafka.events;
+package com.renault.garagesapi.kafka.producer;
 
 import com.renault.garagesapi.dto.VehiculeDto;
 import org.springframework.kafka.core.KafkaTemplate;

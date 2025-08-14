@@ -7,7 +7,7 @@ import com.renault.garagesapi.entity.Garage;
 import com.renault.garagesapi.entity.JourHoraire;
 import com.renault.garagesapi.entity.OpeningTime;
 import com.renault.garagesapi.entity.Vehicule;
-import com.renault.garagesapi.exception.BusinessException;
+import com.renault.garagesapi.exception.GarageHasVehiclesException;
 import com.renault.garagesapi.exception.ResourceNotFoundException;
 import com.renault.garagesapi.mapper.GarageMapper;
 import com.renault.garagesapi.repository.GarageRepository;
@@ -148,7 +148,7 @@ class GarageServiceImplTest {
 
         when(garageRepository.findById(garageId)).thenReturn(Optional.of(garage));
 
-        assertThatExceptionOfType(BusinessException.class)
+        assertThatExceptionOfType(GarageHasVehiclesException.class)
                 .isThrownBy(() -> garageService.deleteGarage(garageId))
                 .withMessage("Impossible de supprimer un garage contenant des véhicules");
 

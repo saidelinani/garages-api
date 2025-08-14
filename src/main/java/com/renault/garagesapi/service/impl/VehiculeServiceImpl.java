@@ -3,7 +3,7 @@ package com.renault.garagesapi.service.impl;
 import com.renault.garagesapi.dto.VehiculeDto;
 import com.renault.garagesapi.entity.Garage;
 import com.renault.garagesapi.entity.Vehicule;
-import com.renault.garagesapi.kafka.events.VehiculeEventsPublisher;
+import com.renault.garagesapi.kafka.producer.VehiculeEventsPublisher;
 import com.renault.garagesapi.exception.GarageFullException;
 import com.renault.garagesapi.exception.ResourceNotFoundException;
 import com.renault.garagesapi.mapper.GarageMapper;

@@ -10,6 +10,7 @@ import com.renault.garagesapi.entity.Vehicule;
 import com.renault.garagesapi.enums.TypeCarburant;
 import com.renault.garagesapi.exception.dto.ErrorResponse;
 import com.renault.garagesapi.repository.GarageRepository;
+import com.renault.garagesapi.repository.VehiculeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,6 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -47,11 +47,15 @@ class GarageControllerIntegrationTest {
     @Autowired
     private GarageRepository garageRepository;
 
+    @Autowired
+    VehiculeRepository vehiculeRepository;
+
     private String apiUrl;
 
     @BeforeEach
     void setUp() {
         apiUrl = "http://localhost:" + port + "/api/garages";
+        vehiculeRepository.deleteAll();
         garageRepository.deleteAll();
     }
 
