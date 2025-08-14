@@ -23,7 +23,7 @@ public class GaragesApiApplication {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(KafkaTemplate<String, VehiculeDto> kafkaTemplate) {
+    CommandLineRunner commandLineRunner(KafkaTemplate<Long, VehiculeDto> kafkaTemplate) {
         return args -> {
             VehiculeDto vehicule = new VehiculeDto(
                     1L,

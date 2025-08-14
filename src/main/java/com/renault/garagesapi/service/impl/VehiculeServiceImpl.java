@@ -3,6 +3,7 @@ package com.renault.garagesapi.service.impl;
 import com.renault.garagesapi.dto.VehiculeDto;
 import com.renault.garagesapi.entity.Garage;
 import com.renault.garagesapi.entity.Vehicule;
+import com.renault.garagesapi.kafka.events.VehiculeEventsPublisher;
 import com.renault.garagesapi.exception.GarageFullException;
 import com.renault.garagesapi.exception.ResourceNotFoundException;
 import com.renault.garagesapi.mapper.GarageMapper;
@@ -23,14 +24,14 @@ public class VehiculeServiceImpl implements IVehiculeService {
     private final VehiculeRepository vehiculeRepository;
     private final VehiculeMapper vehiculeMapper;
     private final IGarageService garageService;
-    private final GarageMapper  garageMapper;
+    private final VehiculeEventsPublisher publisher;
 
     public VehiculeServiceImpl(VehiculeRepository vehiculeRepository, VehiculeMapper vehiculeMapper,
-		    IGarageService garageService, GarageMapper garageMapper) {
+                               IGarageService garageService, GarageMapper garageMapper, VehiculeEventsPublisher publisher) {
         this.vehiculeRepository = vehiculeRepository;
         this.vehiculeMapper = vehiculeMapper;
-	this.garageService = garageService;
-	this.garageMapper = garageMapper;
+        this.garageService = garageService;
+        this.publisher = publisher;
     }
 
     @Override
@@ -39,7 +40,12 @@ public class VehiculeServiceImpl implements IVehiculeService {
 
         Vehicule vehicule = vehiculeMapper.toEntity(vehiculeDto);
         Vehicule savedVehicule = vehiculeRepository.save(vehicule);
-        return vehiculeMapper.toDto(savedVehicule);
+        VehiculeDto savedVehiculeDto = vehiculeMapper.toDto(savedVehicule);
+
+        // Publier l'evenement
+        publisher.publishVehiculeCreated(savedVehiculeDto);
+
+        return savedVehiculeDto;
     }
 
     @Override

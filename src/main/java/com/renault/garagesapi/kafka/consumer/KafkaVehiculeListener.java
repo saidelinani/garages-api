@@ -1,4 +1,4 @@
-package com.renault.garagesapi.config;
+package com.renault.garagesapi.kafka.consumer;
 
 import com.renault.garagesapi.dto.VehiculeDto;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -10,8 +10,5 @@ public class KafkaVehiculeListener {
     @KafkaListener(topics = "vehicule_creation", groupId = "groupId")
     public void kafkaListener(VehiculeDto vehiculeDto) {
         System.out.println("Véhicule reçu: " + vehiculeDto);
-        System.out.println("Marque: " + vehiculeDto.brand());
-        System.out.println("Année: " + vehiculeDto.anneeFabrication());
-        System.out.println("Carburant: " + vehiculeDto.typeCarburant());
     }
 }

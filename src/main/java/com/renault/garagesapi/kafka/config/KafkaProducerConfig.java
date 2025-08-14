@@ -1,8 +1,8 @@
-package com.renault.garagesapi.config;
+package com.renault.garagesapi.kafka.config;
 
 import com.renault.garagesapi.dto.VehiculeDto;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.common.serialization.LongSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,18 +22,18 @@ public class KafkaProducerConfig {
     public Map<String, Object> kafkaProducerConfig() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return props;
     }
 
     @Bean
-    public ProducerFactory<String, VehiculeDto> producerFactory() {
+    public ProducerFactory<Long, VehiculeDto> producerFactory() {
         return new DefaultKafkaProducerFactory<>(kafkaProducerConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, VehiculeDto> kafkaTemplate() {
+    public KafkaTemplate<Long, VehiculeDto> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }
