@@ -11,6 +11,7 @@ import com.renault.garagesapi.mapper.VehiculeMapper;
 import com.renault.garagesapi.repository.VehiculeRepository;
 import com.renault.garagesapi.service.IGarageService;
 import com.renault.garagesapi.service.IVehiculeService;
+import org.springframework.data.repository.support.Repositories;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -25,13 +26,15 @@ public class VehiculeServiceImpl implements IVehiculeService {
     private final VehiculeMapper vehiculeMapper;
     private final IGarageService garageService;
     private final VehiculeEventsPublisher publisher;
+    private final Repositories repositories;
 
     public VehiculeServiceImpl(VehiculeRepository vehiculeRepository, VehiculeMapper vehiculeMapper,
-                               IGarageService garageService, GarageMapper garageMapper, VehiculeEventsPublisher publisher) {
+                               IGarageService garageService, GarageMapper garageMapper, VehiculeEventsPublisher publisher, Repositories repositories) {
         this.vehiculeRepository = vehiculeRepository;
         this.vehiculeMapper = vehiculeMapper;
         this.garageService = garageService;
         this.publisher = publisher;
+        this.repositories = repositories;
     }
 
     @Override
@@ -55,7 +58,7 @@ public class VehiculeServiceImpl implements IVehiculeService {
         Garage garage = garageService.findGarageById(garageId);
 
         if (garage.getVehicules().size() >= MAX_VEHICULES_PAR_GARAGE) {
-            throw new GarageFullException("Le garage a atteint sa capacité maximale de 50 véhicules");
+            throw new GarageFullException("Le garage a atteint sa capacité maximale de "+MAX_VEHICULES_PAR_GARAGE+" véhicules");
         }
 
         Vehicule vehicule = vehiculeMapper.toEntity(vehiculeDto);
@@ -69,7 +72,11 @@ public class VehiculeServiceImpl implements IVehiculeService {
     @Override
     @Transactional
     public VehiculeDto updateVehicule(Long id, VehiculeDto vehiculeDto) {
-        return null;
+
+        Vehicule vehicule = vehiculeMapper.toEntity(vehiculeDto);
+        vehicule.setId(id);
+
+        return vehiculeMapper.toDto(vehiculeRepository.save(vehicule));
     }
 
     @Override
@@ -95,7 +102,11 @@ public class VehiculeServiceImpl implements IVehiculeService {
 
     @Override
     public List<VehiculeDto> getVehiculesByModele(String modele) {
-        return List.of();
+        List<Vehicule> vehicules = vehiculeRepository.findByBrand(modele);
+
+        return vehicules.stream()
+                .map(vehiculeMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     private Vehicule findVehiculeById(Long id) {

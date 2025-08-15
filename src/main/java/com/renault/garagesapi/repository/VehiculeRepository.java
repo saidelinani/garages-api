@@ -10,4 +10,5 @@ import java.util.List;
 @RepositoryRestResource
 public interface VehiculeRepository extends JpaRepository<Vehicule, Long> {
     public List<Vehicule> findByGarageId(Long idVehicule);
+    public List<Vehicule> findByBrand(String brand);
 }
