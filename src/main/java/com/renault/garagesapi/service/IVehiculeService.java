@@ -11,5 +11,5 @@ public interface IVehiculeService {
     void deleteVehicule(Long id);
     VehiculeDto  getVehiculeById(Long id);
     List<VehiculeDto> getVehiculesByGarage(Long garageId);
-    List<VehiculeDto> getVehiculesByModele(String modele);
+    List<VehiculeDto> getVehiculesByBrand(String modele);
 }

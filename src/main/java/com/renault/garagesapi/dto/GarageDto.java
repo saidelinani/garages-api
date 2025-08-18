@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import java.util.List;
 
 public record GarageDto(
@@ -19,6 +20,7 @@ public record GarageDto(
 		String address,
 
 		@NotBlank(message = "Le téléphone est obligatoire")
+		@Pattern(regexp = "\\d{10}", message = "Le téléphone doit contenir 10 chiffres")
 		String telephone,
 
 		@Email(message = "L'email doit être valide")

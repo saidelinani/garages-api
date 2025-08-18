@@ -6,7 +6,6 @@ import com.renault.garagesapi.entity.Vehicule;
 import com.renault.garagesapi.kafka.producer.VehiculeEventsPublisher;
 import com.renault.garagesapi.exception.GarageFullException;
 import com.renault.garagesapi.exception.ResourceNotFoundException;
-import com.renault.garagesapi.mapper.GarageMapper;
 import com.renault.garagesapi.mapper.VehiculeMapper;
 import com.renault.garagesapi.repository.VehiculeRepository;
 import com.renault.garagesapi.service.IGarageService;
@@ -26,15 +25,13 @@ public class VehiculeServiceImpl implements IVehiculeService {
     private final VehiculeMapper vehiculeMapper;
     private final IGarageService garageService;
     private final VehiculeEventsPublisher publisher;
-    private final Repositories repositories;
 
     public VehiculeServiceImpl(VehiculeRepository vehiculeRepository, VehiculeMapper vehiculeMapper,
-                               IGarageService garageService, GarageMapper garageMapper, VehiculeEventsPublisher publisher, Repositories repositories) {
+                               IGarageService garageService, VehiculeEventsPublisher publisher, Repositories repositories) {
         this.vehiculeRepository = vehiculeRepository;
         this.vehiculeMapper = vehiculeMapper;
         this.garageService = garageService;
         this.publisher = publisher;
-        this.repositories = repositories;
     }
 
     @Override
@@ -65,8 +62,12 @@ public class VehiculeServiceImpl implements IVehiculeService {
         vehicule.setGarage(garage);
 
         Vehicule savedVehicule = vehiculeRepository.save(vehicule);
+        VehiculeDto savedVehiculeDto = vehiculeMapper.toDto(savedVehicule);
 
-        return vehiculeMapper.toDto(savedVehicule);
+        // Publier l'evenement
+        publisher.publishVehiculeCreated(savedVehiculeDto);
+
+        return savedVehiculeDto;
     }
 
     @Override
@@ -82,6 +83,9 @@ public class VehiculeServiceImpl implements IVehiculeService {
     @Override
     @Transactional
     public void deleteVehicule(Long id) {
+        if (!vehiculeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Véhicule non trouvé");
+        }
         vehiculeRepository.deleteById(id);
     }
 
@@ -101,7 +105,7 @@ public class VehiculeServiceImpl implements IVehiculeService {
     }
 
     @Override
-    public List<VehiculeDto> getVehiculesByModele(String modele) {
+    public List<VehiculeDto> getVehiculesByBrand(String modele) {
         List<Vehicule> vehicules = vehiculeRepository.findByBrand(modele);
 
         return vehicules.stream()

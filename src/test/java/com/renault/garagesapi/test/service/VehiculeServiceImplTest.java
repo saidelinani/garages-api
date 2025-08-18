@@ -63,7 +63,7 @@ class VehiculeServiceImplTest {
                 null,
                 "Golf 8",
                 Year.of(2018),
-                TypeCarburant.ESSENCE.toString(),
+                TypeCarburant.ESSENCE,
         null);
 
         vehicule = new Vehicule();
@@ -144,8 +144,11 @@ class VehiculeServiceImplTest {
 
         Long vehiculeId = 1L;
 
+        when(vehiculeRepository.existsById(vehiculeId)).thenReturn(true);
+
         vehiculeService.deleteVehicule(vehiculeId);
 
+        verify(vehiculeRepository).existsById(vehiculeId);
         verify(vehiculeRepository).deleteById(vehiculeId);
     }
 
@@ -251,7 +254,7 @@ class VehiculeServiceImplTest {
         when(vehiculeRepository.findByBrand(brand)).thenReturn(vehicules);
         when(vehiculeMapper.toDto(vehicule)).thenReturn(vehiculeDto);
 
-        List<VehiculeDto> result = vehiculeService.getVehiculesByModele(brand);
+        List<VehiculeDto> result = vehiculeService.getVehiculesByBrand(brand);
 
         assertNotNull(result);
         assertEquals(1, result.size());

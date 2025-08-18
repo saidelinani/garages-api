@@ -25,11 +25,12 @@ public class GaragesApiApplication {
     @Bean
     CommandLineRunner commandLineRunner(KafkaTemplate<Long, VehiculeDto> kafkaTemplate) {
         return args -> {
+            System.out.println("Nombre des vehicules: "+garageRepository.countByGarageId(1L));
             VehiculeDto vehicule = new VehiculeDto(
                     1L,
                     "Clio 4",
                     Year.of(2025),
-                    TypeCarburant.DIESEL.toString(),
+                    TypeCarburant.DIESEL,
                     null
             );
             kafkaTemplate.send("vehicule_creation", vehicule);

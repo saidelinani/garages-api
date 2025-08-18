@@ -7,8 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-@RepositoryRestResource
 public interface VehiculeRepository extends JpaRepository<Vehicule, Long> {
-    public List<Vehicule> findByGarageId(Long idVehicule);
+    public List<Vehicule> findByGarageId(Long garageId);
     public List<Vehicule> findByBrand(String brand);
 }

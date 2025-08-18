@@ -169,7 +169,7 @@ class GarageServiceImplTest {
         when(garageRepository.findById(garageId)).thenReturn(Optional.of(garage));
         when(garageMapper.toDto(garage)).thenReturn(garageDto);
 
-        GarageDto result = garageService.getGarageById(garageId);
+        GarageDto result = garageService.getGarageDtoById(garageId);
 
         assertThat(result).isNotNull();
         verify(garageRepository).findById(garageId);
@@ -217,12 +217,12 @@ class GarageServiceImplTest {
         Long garageId = 1L;
         Garage garage = createGarage();
 
-        when(garageRepository.findById(garageId)).thenReturn(Optional.of(garage));
+        when(garageRepository.countByGarageId(garageId)).thenReturn(0);
 
         int result = garageService.getNombreVehicules(garageId);
 
         assertThat(result).isEqualTo(0);
-        verify(garageRepository).findById(garageId);
+        verify(garageRepository).countByGarageId(garageId);
     }
 
     private GarageDto createGarageDto() {

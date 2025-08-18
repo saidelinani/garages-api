@@ -1,7 +1,6 @@
 package com.renault.garagesapi.controller;
 
 import com.renault.garagesapi.dto.GarageDto;
-import com.renault.garagesapi.dto.VehiculeDto;
 import com.renault.garagesapi.service.IGarageService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -26,6 +25,12 @@ public class GarageController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedGarage);
     }
 
+    @PutMapping("/{idGarage}")
+    public ResponseEntity<GarageDto> updateGarage(@PathVariable Long idGarage,
+                                                  @Valid @RequestBody GarageDto garageDto) {
+        return ResponseEntity.ok(garageService.updateGarage(idGarage, garageDto));
+    }
+
     @GetMapping
     public ResponseEntity<Page<GarageDto>> getAllGarages(Pageable pageable) {
         Page<GarageDto> garages = garageService.getAllGarages(pageable);
@@ -35,7 +40,7 @@ public class GarageController {
     @GetMapping("/{idGarage}")
     public ResponseEntity<GarageDto> getGarageById(@PathVariable Long idGarage) {
 
-        return ResponseEntity.ok(garageService.getGarageById(idGarage));
+        return ResponseEntity.ok(garageService.getGarageDtoById(idGarage));
     }
 
     @DeleteMapping("/{idGarage}")

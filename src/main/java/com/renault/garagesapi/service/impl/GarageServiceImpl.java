@@ -3,7 +3,6 @@ package com.renault.garagesapi.service.impl;
 import com.renault.garagesapi.dto.GarageDto;
 import com.renault.garagesapi.entity.Garage;
 import com.renault.garagesapi.entity.JourHoraire;
-import com.renault.garagesapi.exception.BusinessException;
 import com.renault.garagesapi.exception.GarageHasVehiclesException;
 import com.renault.garagesapi.exception.ResourceNotFoundException;
 import com.renault.garagesapi.mapper.GarageMapper;
@@ -13,8 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class GarageServiceImpl implements IGarageService {
@@ -65,7 +62,7 @@ public class GarageServiceImpl implements IGarageService {
 
 
     @Override
-    public GarageDto getGarageById(Long id) {
+    public GarageDto getGarageDtoById(Long id) {
         return garageMapper.toDto(findGarageById(id));
     }
 
@@ -78,7 +75,7 @@ public class GarageServiceImpl implements IGarageService {
     @Override
     @Transactional(readOnly = true)
     public int getNombreVehicules(Long garageId) {
-        return findGarageById(garageId).getVehicules().size();
+        return garageRepository.countByGarageId(garageId);
     }
 
     @Override
