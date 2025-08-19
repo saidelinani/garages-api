@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.Year;
 import java.util.List;
 
-public record VehiculeDto(
+public record VehicleDto(
 		Long id,
 
 		@NotBlank(message = "La marque est obligatoire")
@@ -23,7 +23,7 @@ public record VehiculeDto(
 		TypeCarburant typeCarburant,
 
 		@JsonSetter(nulls = Nulls.AS_EMPTY)
-		List<@Valid AccessoireDto> accessoires
+		List<@Valid AccessoryDto> accessoires
 ) {
 	@AssertTrue(message = "L'année de fabrication ne peut pas être dans le futur")
 	public boolean isValidYear() {

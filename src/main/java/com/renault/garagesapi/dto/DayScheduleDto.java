@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.DayOfWeek;
 import java.util.List;
 
-public record JourHoraireDto(
+public record DayScheduleDto(
 
 		@NotNull(message = "Le jour est obligatoire")
 		DayOfWeek jour,

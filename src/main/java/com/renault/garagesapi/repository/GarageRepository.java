@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GarageRepository extends JpaRepository<Garage, Long> {
 
-    @Query("SELECT COUNT(v) FROM Vehicule v WHERE v.garage.id = :garageId")
+    @Query("SELECT COUNT(v) FROM Vehicle v WHERE v.garage.id = :garageId")
     int countByGarageId(Long garageId);
 }

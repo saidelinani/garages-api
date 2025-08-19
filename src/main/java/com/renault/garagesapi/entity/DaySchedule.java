@@ -27,7 +27,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class JourHoraire {
+public class DaySchedule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,5 +48,5 @@ public class JourHoraire {
             joinColumns = @JoinColumn(name = "jour_id")
     )
     @OrderBy("startTime ASC")
-    private List<OpeningTime> creneaux = new ArrayList<>();
+    private List<OpeningTime> openingTimes = new ArrayList<>();
 }

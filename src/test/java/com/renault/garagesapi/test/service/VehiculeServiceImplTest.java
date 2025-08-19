@@ -1,16 +1,16 @@
 package com.renault.garagesapi.test.service;
 
-import com.renault.garagesapi.dto.VehiculeDto;
+import com.renault.garagesapi.dto.VehicleDto;
 import com.renault.garagesapi.entity.Garage;
-import com.renault.garagesapi.entity.Vehicule;
+import com.renault.garagesapi.entity.Vehicle;
 import com.renault.garagesapi.enums.TypeCarburant;
 import com.renault.garagesapi.exception.GarageFullException;
 import com.renault.garagesapi.exception.ResourceNotFoundException;
 import com.renault.garagesapi.kafka.producer.VehiculeEventsPublisher;
-import com.renault.garagesapi.mapper.VehiculeMapper;
-import com.renault.garagesapi.repository.VehiculeRepository;
+import com.renault.garagesapi.mapper.VehicleMapper;
+import com.renault.garagesapi.repository.VehicleRepository;
 import com.renault.garagesapi.service.IGarageService;
-import com.renault.garagesapi.service.impl.VehiculeServiceImpl;
+import com.renault.garagesapi.service.impl.VehicleServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,10 +36,10 @@ import static org.mockito.Mockito.when;
 class VehiculeServiceImplTest {
 
     @Mock
-    private VehiculeRepository vehiculeRepository;
+    private VehicleRepository vehicleRepository;
 
     @Mock
-    private VehiculeMapper vehiculeMapper;
+    private VehicleMapper vehicleMapper;
 
     @Mock
     private IGarageService garageService;
@@ -48,10 +48,10 @@ class VehiculeServiceImplTest {
     private VehiculeEventsPublisher publisher;
 
     @InjectMocks
-    private VehiculeServiceImpl vehiculeService;
+    private VehicleServiceImpl vehiculeService;
 
-    private VehiculeDto vehiculeDto;
-    private Vehicule vehicule;
+    private VehicleDto vehicleDto;
+    private Vehicle vehicle;
     private Garage garage;
 
     public static final int MAX_VEHICULES_PAR_GARAGE = 2;
@@ -59,44 +59,44 @@ class VehiculeServiceImplTest {
     @BeforeEach
     void setUp() {
         // Création des objets de test
-        vehiculeDto = new VehiculeDto(
+        vehicleDto = new VehicleDto(
                 null,
                 "Golf 8",
                 Year.of(2018),
                 TypeCarburant.ESSENCE,
         null);
 
-        vehicule = new Vehicule();
-        vehicule.setId(1L);
-        vehicule.setBrand("Golf 8");
-        vehicule.setAnneeFabrication(Year.of(2018));
-        vehicule.setTypeCarburant(TypeCarburant.ESSENCE);
+        vehicle = new Vehicle();
+        vehicle.setId(1L);
+        vehicle.setBrand("Golf 8");
+        vehicle.setAnneeFabrication(Year.of(2018));
+        vehicle.setTypeCarburant(TypeCarburant.ESSENCE);
 
         garage = new Garage();
         garage.setId(1L);
         garage.setName("Garage ain sebaa");
-        garage.setVehicules(new ArrayList<>());
+        garage.setVehicles(new ArrayList<>());
     }
 
     @Test
     void addVehicule_ShouldReturnSavedVehicule() {
 
-        when(vehiculeMapper.toEntity(vehiculeDto)).thenReturn(vehicule);
-        when(vehiculeRepository.save(vehicule)).thenReturn(vehicule);
-        when(vehiculeMapper.toDto(vehicule)).thenReturn(vehiculeDto);
+        when(vehicleMapper.toEntity(vehicleDto)).thenReturn(vehicle);
+        when(vehicleRepository.save(vehicle)).thenReturn(vehicle);
+        when(vehicleMapper.toDto(vehicle)).thenReturn(vehicleDto);
 
-        VehiculeDto result = vehiculeService.addVehicule(vehiculeDto);
+        VehicleDto result = vehiculeService.addVehicule(vehicleDto);
 
         assertNotNull(result);
-        assertEquals(vehiculeDto.id(), result.id());
-        assertEquals(vehiculeDto.brand(), result.brand());
-        assertEquals(vehiculeDto.anneeFabrication(), result.anneeFabrication());
-        assertEquals(vehiculeDto.typeCarburant(), result.typeCarburant());
+        assertEquals(vehicleDto.id(), result.id());
+        assertEquals(vehicleDto.brand(), result.brand());
+        assertEquals(vehicleDto.anneeFabrication(), result.anneeFabrication());
+        assertEquals(vehicleDto.typeCarburant(), result.typeCarburant());
 
-        verify(vehiculeMapper).toEntity(vehiculeDto);
-        verify(vehiculeRepository).save(vehicule);
-        verify(vehiculeMapper).toDto(vehicule);
-        verify(publisher).publishVehiculeCreated(vehiculeDto);
+        verify(vehicleMapper).toEntity(vehicleDto);
+        verify(vehicleRepository).save(vehicle);
+        verify(vehicleMapper).toDto(vehicle);
+        verify(publisher).publishVehiculeCreated(vehicleDto);
     }
 
 
@@ -105,38 +105,38 @@ class VehiculeServiceImplTest {
 
         Long garageId = 1L;
         when(garageService.findGarageById(garageId)).thenReturn(garage);
-        when(vehiculeMapper.toEntity(vehiculeDto)).thenReturn(vehicule);
-        when(vehiculeRepository.save(any(Vehicule.class))).thenReturn(vehicule);
-        when(vehiculeMapper.toDto(vehicule)).thenReturn(vehiculeDto);
+        when(vehicleMapper.toEntity(vehicleDto)).thenReturn(vehicle);
+        when(vehicleRepository.save(any(Vehicle.class))).thenReturn(vehicle);
+        when(vehicleMapper.toDto(vehicle)).thenReturn(vehicleDto);
 
-        VehiculeDto result = vehiculeService.addVehiculeToGarage(garageId, vehiculeDto);
+        VehicleDto result = vehiculeService.addVehiculeToGarage(garageId, vehicleDto);
 
         assertNotNull(result);
-        assertEquals(vehiculeDto.id(), result.id());
+        assertEquals(vehicleDto.id(), result.id());
         verify(garageService).findGarageById(garageId);
-        verify(vehiculeMapper).toEntity(vehiculeDto);
-        verify(vehiculeRepository).save(any(Vehicule.class));
-        verify(vehiculeMapper).toDto(vehicule);
+        verify(vehicleMapper).toEntity(vehicleDto);
+        verify(vehicleRepository).save(any(Vehicle.class));
+        verify(vehicleMapper).toDto(vehicle);
 
-        assertEquals(garage, vehicule.getGarage());
+        assertEquals(garage, vehicle.getGarage());
     }
 
     @Test
     void addVehiculeToGarage_ShouldThrowExceptionWhenGarageIsFull() {
 
         Long garageId = 1L;
-        List<Vehicule> vehiculesExistants = Arrays.asList(new Vehicule(), new Vehicule());
-        garage.setVehicules(vehiculesExistants);
+        List<Vehicle> vehiculesExistants = Arrays.asList(new Vehicle(), new Vehicle());
+        garage.setVehicles(vehiculesExistants);
 
         when(garageService.findGarageById(garageId)).thenReturn(garage);
 
         assertThatExceptionOfType(GarageFullException.class)
-                .isThrownBy(() -> vehiculeService.addVehiculeToGarage(garageId, vehiculeDto))
+                .isThrownBy(() -> vehiculeService.addVehiculeToGarage(garageId, vehicleDto))
                 .withMessage("Le garage a atteint sa capacité maximale de "+MAX_VEHICULES_PAR_GARAGE+" véhicules");
 
         verify(garageService).findGarageById(garageId);
-        verify(vehiculeMapper, never()).toEntity(any());
-        verify(vehiculeRepository, never()).save(any());
+        verify(vehicleMapper, never()).toEntity(any());
+        verify(vehicleRepository, never()).save(any());
     }
 
     @Test
@@ -144,80 +144,80 @@ class VehiculeServiceImplTest {
 
         Long vehiculeId = 1L;
 
-        when(vehiculeRepository.existsById(vehiculeId)).thenReturn(true);
+        when(vehicleRepository.existsById(vehiculeId)).thenReturn(true);
 
         vehiculeService.deleteVehicule(vehiculeId);
 
-        verify(vehiculeRepository).existsById(vehiculeId);
-        verify(vehiculeRepository).deleteById(vehiculeId);
+        verify(vehicleRepository).existsById(vehiculeId);
+        verify(vehicleRepository).deleteById(vehiculeId);
     }
 
     @Test
     void getVehiculeById_ShouldReturnVehicule() {
 
         Long vehiculeId = 1L;
-        when(vehiculeRepository.findById(vehiculeId)).thenReturn(Optional.of(vehicule));
-        when(vehiculeMapper.toDto(vehicule)).thenReturn(vehiculeDto);
+        when(vehicleRepository.findById(vehiculeId)).thenReturn(Optional.of(vehicle));
+        when(vehicleMapper.toDto(vehicle)).thenReturn(vehicleDto);
 
-        VehiculeDto result = vehiculeService.getVehiculeById(vehiculeId);
+        VehicleDto result = vehiculeService.getVehiculeById(vehiculeId);
 
         assertNotNull(result);
-        assertEquals(vehiculeDto.id(), result.id());
-        assertEquals(vehiculeDto.brand(), result.brand());
-        assertEquals(vehiculeDto.anneeFabrication(), result.anneeFabrication());
-        assertEquals(vehiculeDto.typeCarburant(), result.typeCarburant());
+        assertEquals(vehicleDto.id(), result.id());
+        assertEquals(vehicleDto.brand(), result.brand());
+        assertEquals(vehicleDto.anneeFabrication(), result.anneeFabrication());
+        assertEquals(vehicleDto.typeCarburant(), result.typeCarburant());
 
-        verify(vehiculeRepository).findById(vehiculeId);
-        verify(vehiculeMapper).toDto(vehicule);
+        verify(vehicleRepository).findById(vehiculeId);
+        verify(vehicleMapper).toDto(vehicle);
     }
 
     @Test
     void getVehiculeById_ShouldThrowResourceNotFoundException() {
 
         Long vehiculeId = 2000L;
-        when(vehiculeRepository.findById(vehiculeId)).thenReturn(Optional.empty());
+        when(vehicleRepository.findById(vehiculeId)).thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                 () -> vehiculeService.getVehiculeById(vehiculeId));
 
         assertEquals("Véhicule non trouvé", exception.getMessage());
 
-        verify(vehiculeRepository).findById(vehiculeId);
-        verify(vehiculeMapper, never()).toDto(any());
+        verify(vehicleRepository).findById(vehiculeId);
+        verify(vehicleMapper, never()).toDto(any());
     }
 
     @Test
     void getVehiculesByGarage_ShouldReturnVehiculeList() {
 
         Long garageId = 1L;
-        List<Vehicule> vehicules = Arrays.asList(vehicule);
+        List<Vehicle> vehicles = Arrays.asList(vehicle);
 
-        when(vehiculeRepository.findByGarageId(garageId)).thenReturn(vehicules);
-        when(vehiculeMapper.toDto(vehicule)).thenReturn(vehiculeDto);
+        when(vehicleRepository.findByGarageId(garageId)).thenReturn(vehicles);
+        when(vehicleMapper.toDto(vehicle)).thenReturn(vehicleDto);
 
-        List<VehiculeDto> result = vehiculeService.getVehiculesByGarage(garageId);
+        List<VehicleDto> result = vehiculeService.getVehiculesByGarage(garageId);
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(vehiculeDto.id(), result.get(0).id());
+        assertEquals(vehicleDto.id(), result.get(0).id());
 
-        verify(vehiculeRepository).findByGarageId(garageId);
-        verify(vehiculeMapper).toDto(any(Vehicule.class));
+        verify(vehicleRepository).findByGarageId(garageId);
+        verify(vehicleMapper).toDto(any(Vehicle.class));
     }
 
     @Test
 
     void getVehiculesByGarage_ShouldReturnEmptyListWhenGarageHasNoVehicules() {
         Long garageId = 1L;
-        when(vehiculeRepository.findByGarageId(garageId)).thenReturn(new ArrayList<>());
+        when(vehicleRepository.findByGarageId(garageId)).thenReturn(new ArrayList<>());
 
-        List<VehiculeDto> result = vehiculeService.getVehiculesByGarage(garageId);
+        List<VehicleDto> result = vehiculeService.getVehiculesByGarage(garageId);
 
         assertNotNull(result);
         assertEquals(0, result.size());
 
-        verify(vehiculeRepository).findByGarageId(garageId);
-        verify(vehiculeMapper, never()).toDto(any());
+        verify(vehicleRepository).findByGarageId(garageId);
+        verify(vehicleMapper, never()).toDto(any());
     }
 
 
@@ -225,53 +225,53 @@ class VehiculeServiceImplTest {
     void updateVehicule() {
 
         Long vehiculeId = 1L;
-        Vehicule updatedVehicule = createVehicule();
-        updatedVehicule.setId(vehiculeId);
+        Vehicle updatedVehicle = createVehicule();
+        updatedVehicle.setId(vehiculeId);
 
-        Vehicule savedVehicule = createVehicule();
-        savedVehicule.setId(vehiculeId);
+        Vehicle savedVehicle = createVehicule();
+        savedVehicle.setId(vehiculeId);
 
-        when(vehiculeMapper.toEntity(vehiculeDto)).thenReturn(updatedVehicule);
-        when(vehiculeRepository.save(updatedVehicule)).thenReturn(savedVehicule);
-        when(vehiculeMapper.toDto(savedVehicule)).thenReturn(vehiculeDto);
+        when(vehicleMapper.toEntity(vehicleDto)).thenReturn(updatedVehicle);
+        when(vehicleRepository.save(updatedVehicle)).thenReturn(savedVehicle);
+        when(vehicleMapper.toDto(savedVehicle)).thenReturn(vehicleDto);
 
-        VehiculeDto result = vehiculeService.updateVehicule(vehiculeId, vehiculeDto);
+        VehicleDto result = vehiculeService.updateVehicule(vehiculeId, vehicleDto);
 
         assertThat(result).isNotNull();
-        assertThat(updatedVehicule.getId()).isEqualTo(vehiculeId);
+        assertThat(updatedVehicle.getId()).isEqualTo(vehiculeId);
 
-        verify(vehiculeMapper).toEntity(vehiculeDto);
-        verify(vehiculeRepository).save(updatedVehicule);
-        verify(vehiculeMapper).toDto(savedVehicule);
+        verify(vehicleMapper).toEntity(vehicleDto);
+        verify(vehicleRepository).save(updatedVehicle);
+        verify(vehicleMapper).toDto(savedVehicle);
     }
 
     @Test
     void getVehiculesByModele() {
 
         String brand = "Golf 8";
-        List<Vehicule> vehicules = Arrays.asList(vehicule);
+        List<Vehicle> vehicles = Arrays.asList(vehicle);
 
-        when(vehiculeRepository.findByBrand(brand)).thenReturn(vehicules);
-        when(vehiculeMapper.toDto(vehicule)).thenReturn(vehiculeDto);
+        when(vehicleRepository.findByBrand(brand)).thenReturn(vehicles);
+        when(vehicleMapper.toDto(vehicle)).thenReturn(vehicleDto);
 
-        List<VehiculeDto> result = vehiculeService.getVehiculesByBrand(brand);
+        List<VehicleDto> result = vehiculeService.getVehiculesByBrand(brand);
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(vehiculeDto.id(), result.get(0).id());
+        assertEquals(vehicleDto.id(), result.get(0).id());
 
-        verify(vehiculeRepository).findByBrand(brand);
-        verify(vehiculeMapper).toDto(any(Vehicule.class));
+        verify(vehicleRepository).findByBrand(brand);
+        verify(vehicleMapper).toDto(any(Vehicle.class));
     }
 
-    private Vehicule createVehicule() {
+    private Vehicle createVehicule() {
 
-        Vehicule vehicule = new Vehicule();
-        vehicule.setId(1L);
-        vehicule.setBrand("Golf 8");
-        vehicule.setAnneeFabrication(Year.of(2018));
-        vehicule.setTypeCarburant(TypeCarburant.ESSENCE);
+        Vehicle vehicle = new Vehicle();
+        vehicle.setId(1L);
+        vehicle.setBrand("Golf 8");
+        vehicle.setAnneeFabrication(Year.of(2018));
+        vehicle.setTypeCarburant(TypeCarburant.ESSENCE);
 
-        return vehicule;
+        return vehicle;
     }
 }

@@ -1,9 +1,8 @@
 package com.renault.garagesapi.kafka.config;
 
-import com.renault.garagesapi.dto.VehiculeDto;
+import com.renault.garagesapi.dto.VehicleDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.LongDeserializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,18 +28,18 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
 
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.renault.garagesapi.dto.*");
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, VehiculeDto.class.getName());
+        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, VehicleDto.class.getName());
         return props;
     }
 
     @Bean
-    public ConsumerFactory<Long, VehiculeDto> consumerFactory() {
+    public ConsumerFactory<Long, VehicleDto> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(kafkaConsumerConfig());
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<Long, VehiculeDto>> kafkaListenerContainerFactory(ConsumerFactory<Long, VehiculeDto> consumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<Long, VehiculeDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<Long, VehicleDto>> kafkaListenerContainerFactory(ConsumerFactory<Long, VehicleDto> consumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<Long, VehicleDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         return factory;
     }

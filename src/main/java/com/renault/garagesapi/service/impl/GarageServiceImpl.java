@@ -1,8 +1,8 @@
 package com.renault.garagesapi.service.impl;
 
 import com.renault.garagesapi.dto.GarageDto;
+import com.renault.garagesapi.entity.DaySchedule;
 import com.renault.garagesapi.entity.Garage;
-import com.renault.garagesapi.entity.JourHoraire;
 import com.renault.garagesapi.exception.GarageHasVehiclesException;
 import com.renault.garagesapi.exception.ResourceNotFoundException;
 import com.renault.garagesapi.mapper.GarageMapper;
@@ -25,12 +25,13 @@ public class GarageServiceImpl implements IGarageService {
     }
 
     @Override
+    @Transactional
     public GarageDto addGarage(GarageDto garageDto) {
 
         Garage garage = garageMapper.toEntity(garageDto);
 
-        for (JourHoraire jourHoraire : garage.getHorairesOuverture()) {
-            jourHoraire.setGarage(garage);
+        for (DaySchedule daySchedule : garage.getHorairesOuverture()) {
+            daySchedule.setGarage(garage);
         }
 
         Garage savedGarage = garageRepository.save(garage);
@@ -38,22 +39,24 @@ public class GarageServiceImpl implements IGarageService {
     }
 
     @Override
+    @Transactional
     public GarageDto updateGarage(Long id, GarageDto garageDto) {
 
         Garage existingGarage = findGarageById(id);
 
         Garage garage = garageMapper.toEntity(garageDto);
         garage.setId(id);
-        garage.setVehicules(existingGarage.getVehicules());
+        garage.setVehicles(existingGarage.getVehicles());
 
         return garageMapper.toDto(garageRepository.save(garage));
     }
 
     @Override
+    @Transactional
     public void deleteGarage(Long id) {
-        Garage existingGarage = findGarageById(id);
+        var existingGarage = findGarageById(id);
 
-        if (!existingGarage.getVehicules().isEmpty()) {
+        if (!existingGarage.getVehicles().isEmpty()) {
             throw new GarageHasVehiclesException("Impossible de supprimer un garage contenant des véhicules");
         }
 
@@ -62,11 +65,13 @@ public class GarageServiceImpl implements IGarageService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public GarageDto getGarageDtoById(Long id) {
         return garageMapper.toDto(findGarageById(id));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<GarageDto> getAllGarages(Pageable pageable) {
         return garageRepository.findAll(pageable)
                 .map(garageMapper::toDto);
@@ -79,6 +84,7 @@ public class GarageServiceImpl implements IGarageService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Garage findGarageById(Long id) {
         return garageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Garage non trouvé"));

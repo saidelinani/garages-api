@@ -1,6 +1,6 @@
 package com.renault.garagesapi.kafka.consumer;
 
-import com.renault.garagesapi.dto.VehiculeDto;
+import com.renault.garagesapi.dto.VehicleDto;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class KafkaVehiculeListener {
 
     @KafkaListener(topics = "vehicule_creation", groupId = "groupId")
-    public void kafkaListener(VehiculeDto vehiculeDto) {
-        System.out.println("Véhicule reçu: " + vehiculeDto);
+    public void kafkaListener(VehicleDto vehicleDto) {
+        System.out.println("Véhicule reçu: " + vehicleDto);
     }
 }

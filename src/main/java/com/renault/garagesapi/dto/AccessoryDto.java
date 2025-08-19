@@ -3,7 +3,7 @@ package com.renault.garagesapi.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
-public record AccessoireDto(
+public record AccessoryDto(
 
 		Long id,
 

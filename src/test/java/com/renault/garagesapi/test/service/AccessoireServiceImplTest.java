@@ -1,14 +1,14 @@
 package com.renault.garagesapi.test.service;
 
-import com.renault.garagesapi.dto.AccessoireDto;
-import com.renault.garagesapi.dto.VehiculeDto;
-import com.renault.garagesapi.entity.Accessoire;
+import com.renault.garagesapi.dto.AccessoryDto;
+import com.renault.garagesapi.dto.VehicleDto;
+import com.renault.garagesapi.entity.Accessory;
 import com.renault.garagesapi.enums.TypeCarburant;
-import com.renault.garagesapi.mapper.AccessoireMapper;
-import com.renault.garagesapi.mapper.VehiculeMapper;
-import com.renault.garagesapi.repository.AccessoireRepository;
-import com.renault.garagesapi.service.IVehiculeService;
-import com.renault.garagesapi.service.impl.AccessoireServiceImpl;
+import com.renault.garagesapi.mapper.AccessoryMapper;
+import com.renault.garagesapi.mapper.VehicleMapper;
+import com.renault.garagesapi.repository.AccessoryRepository;
+import com.renault.garagesapi.service.IVehicleService;
+import com.renault.garagesapi.service.impl.AccessoryServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,30 +27,30 @@ import static org.mockito.Mockito.when;
 public class AccessoireServiceImplTest {
 
     @Mock
-    private AccessoireRepository accessoireRepository;
+    private AccessoryRepository accessoryRepository;
 
     @Mock
-    private AccessoireMapper accessoireMapper;
+    private AccessoryMapper accessoryMapper;
 
     @InjectMocks
-    private AccessoireServiceImpl accessoireService;
+    private AccessoryServiceImpl accessoireService;
 
     @Mock
-    private IVehiculeService vehiculeService;
+    private IVehicleService vehiculeService;
 
     @Mock
-    private VehiculeMapper vehiculeMapper;
+    private VehicleMapper vehicleMapper;
 
-    private AccessoireDto accessoireDto;
-    private Accessoire accessoire;
-    private VehiculeDto vehiculeDto;
+    private AccessoryDto accessoryDto;
+    private Accessory accessory;
+    private VehicleDto vehicleDto;
 
     @BeforeEach
     public void setUp() {
-        accessoireDto = createAccessoireDto();
-        accessoire = createAccessoire();
+        accessoryDto = createAccessoireDto();
+        accessory = createAccessoire();
 
-        vehiculeDto = new VehiculeDto(
+        vehicleDto = new VehicleDto(
                 null,
                 "Renoult clio 5",
                 Year.of(2018),
@@ -61,64 +61,64 @@ public class AccessoireServiceImplTest {
     @Test
     public void testAddAccessoire() {
 
-        Accessoire accessoire = createAccessoire();
-        AccessoireDto accessoireDto = createAccessoireDto();
+        Accessory accessory = createAccessoire();
+        AccessoryDto accessoryDto = createAccessoireDto();
 
-        when(accessoireMapper.toEntity(accessoireDto)).thenReturn(accessoire);
-        when(accessoireRepository.save(accessoire)).thenReturn(accessoire);
-        when(accessoireMapper.toDto(accessoire)).thenReturn(accessoireDto);
+        when(accessoryMapper.toEntity(accessoryDto)).thenReturn(accessory);
+        when(accessoryRepository.save(accessory)).thenReturn(accessory);
+        when(accessoryMapper.toDto(accessory)).thenReturn(accessoryDto);
 
-        AccessoireDto result = accessoireService.addAccessoire(accessoireDto);
+        AccessoryDto result = accessoireService.addAccessoire(accessoryDto);
 
-        assertThat(accessoireDto.nom()).isEqualTo(result.nom());
-        assertThat(accessoireDto.description()).isEqualTo(result.description());
-        assertThat(accessoireDto.prix()).isEqualTo(result.prix());
-        assertThat(accessoireDto.type()).isEqualTo(result.type());
+        assertThat(accessoryDto.nom()).isEqualTo(result.nom());
+        assertThat(accessoryDto.description()).isEqualTo(result.description());
+        assertThat(accessoryDto.prix()).isEqualTo(result.prix());
+        assertThat(accessoryDto.type()).isEqualTo(result.type());
 
-        verify(accessoireRepository).save(accessoire);
+        verify(accessoryRepository).save(accessory);
     }
 
     @Test
     public void testUpdateAccessoire() {
-        when(accessoireRepository.findById(1L)).thenReturn(Optional.of(accessoire));
-        when(accessoireMapper.toEntity(accessoireDto)).thenReturn(accessoire);
-        when(accessoireRepository.save(accessoire)).thenReturn(accessoire);
-        when(accessoireMapper.toDto(accessoire)).thenReturn(accessoireDto);
+        when(accessoryRepository.findById(1L)).thenReturn(Optional.of(accessory));
+        when(accessoryMapper.toEntity(accessoryDto)).thenReturn(accessory);
+        when(accessoryRepository.save(accessory)).thenReturn(accessory);
+        when(accessoryMapper.toDto(accessory)).thenReturn(accessoryDto);
 
-        AccessoireDto result = accessoireService.updateAccessoire(1L, accessoireDto);
+        AccessoryDto result = accessoireService.updateAccessoire(1L, accessoryDto);
 
         assertNotNull(result);
-        verify(accessoireRepository).save(accessoire);
+        verify(accessoryRepository).save(accessory);
     }
 
     @Test
     public void testDeleteAccessoire() {
-        when(accessoireRepository.findById(1L)).thenReturn(Optional.of(accessoire));
+        when(accessoryRepository.findById(1L)).thenReturn(Optional.of(accessory));
 
         accessoireService.deleteAccessoire(1L);
 
-        verify(accessoireRepository).delete(accessoire);
+        verify(accessoryRepository).delete(accessory);
     }
 
-    public AccessoireDto createAccessoireDto(){
-        AccessoireDto accessoireDto = new AccessoireDto(
+    public AccessoryDto createAccessoireDto(){
+        AccessoryDto accessoryDto = new AccessoryDto(
                 null,
                 "Caméra de recul",
                 "Caméra de recul",
                 700,
                 "Sécurité"
         );
-        return accessoireDto;
+        return accessoryDto;
     }
 
-    public Accessoire createAccessoire(){
-        Accessoire accessoire = new Accessoire();
-        accessoire.setId(1L);
-        accessoire.setNom("Caméra de recul");
-        accessoire.setDescription("Caméra de recul");
-        accessoire.setPrix(new BigDecimal(700));
-        accessoire.setType("Sécurité");
+    public Accessory createAccessoire(){
+        Accessory accessory = new Accessory();
+        accessory.setId(1L);
+        accessory.setNom("Caméra de recul");
+        accessory.setDescription("Caméra de recul");
+        accessory.setPrix(new BigDecimal(700));
+        accessory.setType("Sécurité");
 
-        return accessoire;
+        return accessory;
     }
 }

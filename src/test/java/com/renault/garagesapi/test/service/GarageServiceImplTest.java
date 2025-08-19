@@ -1,12 +1,12 @@
 package com.renault.garagesapi.test.service;
 
 import com.renault.garagesapi.dto.GarageDto;
-import com.renault.garagesapi.dto.JourHoraireDto;
+import com.renault.garagesapi.dto.DayScheduleDto;
 import com.renault.garagesapi.dto.OpeningTimeDto;
 import com.renault.garagesapi.entity.Garage;
-import com.renault.garagesapi.entity.JourHoraire;
+import com.renault.garagesapi.entity.DaySchedule;
 import com.renault.garagesapi.entity.OpeningTime;
-import com.renault.garagesapi.entity.Vehicule;
+import com.renault.garagesapi.entity.Vehicle;
 import com.renault.garagesapi.exception.GarageHasVehiclesException;
 import com.renault.garagesapi.exception.ResourceNotFoundException;
 import com.renault.garagesapi.mapper.GarageMapper;
@@ -94,7 +94,7 @@ class GarageServiceImplTest {
 
         assertThat(result).isNotNull();
         assertThat(updatedGarage.getId()).isEqualTo(garageId);
-        assertThat(updatedGarage.getVehicules()).isEqualTo(existingGarage.getVehicules());
+        assertThat(updatedGarage.getVehicles()).isEqualTo(existingGarage.getVehicles());
 
         verify(garageRepository).findById(garageId);
         verify(garageMapper).toEntity(garageDto);
@@ -127,7 +127,7 @@ class GarageServiceImplTest {
         Long garageId = 1L;
         Garage garage = createGarage();
         garage.setId(garageId);
-        garage.setVehicules(new ArrayList<>());
+        garage.setVehicles(new ArrayList<>());
 
         when(garageRepository.findById(garageId)).thenReturn(Optional.of(garage));
 
@@ -144,7 +144,7 @@ class GarageServiceImplTest {
         Long garageId = 1L;
         Garage garage = createGarage();
         garage.setId(garageId);
-        garage.setVehicules(List.of(new Vehicule(), new Vehicule()));
+        garage.setVehicles(List.of(new Vehicle(), new Vehicle()));
 
         when(garageRepository.findById(garageId)).thenReturn(Optional.of(garage));
 
@@ -231,8 +231,8 @@ class GarageServiceImplTest {
         creneaux.add(new OpeningTimeDto(LocalTime.of(8, 0), LocalTime.of(12, 30)));
         creneaux.add(new OpeningTimeDto(LocalTime.of(14, 0), LocalTime.of(18, 30)));
 
-        List<JourHoraireDto> horaires = List.of(
-                new JourHoraireDto(DayOfWeek.MONDAY, creneaux)
+        List<DayScheduleDto> horaires = List.of(
+                new DayScheduleDto(DayOfWeek.MONDAY, creneaux)
         );
 
         return new GarageDto(
@@ -259,10 +259,10 @@ class GarageServiceImplTest {
         creneaux.add(new OpeningTime(LocalTime.of(8, 0), LocalTime.of(12, 30)));
         creneaux.add(new OpeningTime(LocalTime.of(14, 0), LocalTime.of(18, 30)));
 
-        List<JourHoraire> horaires = new ArrayList<>();
-        JourHoraire lundi = new JourHoraire();
+        List<DaySchedule> horaires = new ArrayList<>();
+        DaySchedule lundi = new DaySchedule();
         lundi.setJour(DayOfWeek.MONDAY);
-        lundi.setCreneaux(creneaux);
+        lundi.setOpeningTimes(creneaux);
 
         garage.setHorairesOuverture(horaires);
 

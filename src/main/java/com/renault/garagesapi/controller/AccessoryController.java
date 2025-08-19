@@ -1,7 +1,7 @@
 package com.renault.garagesapi.controller;
 
-import com.renault.garagesapi.dto.AccessoireDto;
-import com.renault.garagesapi.service.IAccessoireService;
+import com.renault.garagesapi.dto.AccessoryDto;
+import com.renault.garagesapi.service.IAccessoryService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,23 +19,23 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/accessoires")
-public class AccessoireController {
+public class AccessoryController {
 
-    private final IAccessoireService accessoireService;
+    private final IAccessoryService accessoireService;
 
-    public AccessoireController(IAccessoireService accessoireService) {
+    public AccessoryController(IAccessoryService accessoireService) {
         this.accessoireService = accessoireService;
     }
 
     @PostMapping
-    public ResponseEntity<AccessoireDto> addAccessoire(@Valid @RequestBody AccessoireDto accessoireDto) {
-        AccessoireDto savedAccessoire = accessoireService.addAccessoire(accessoireDto);
+    public ResponseEntity<AccessoryDto> addAccessoire(@Valid @RequestBody AccessoryDto accessoryDto) {
+        AccessoryDto savedAccessoire = accessoireService.addAccessoire(accessoryDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedAccessoire);
     }
 
     @PutMapping("/{idAccessoire}")
-    public ResponseEntity<AccessoireDto> updateAccessoire(@PathVariable Long idAccessoire, @Valid @RequestBody AccessoireDto accessoireDto) {
-        AccessoireDto savedAccessoire = accessoireService.updateAccessoire(idAccessoire, accessoireDto);
+    public ResponseEntity<AccessoryDto> updateAccessoire(@PathVariable Long idAccessoire, @Valid @RequestBody AccessoryDto accessoryDto) {
+        AccessoryDto savedAccessoire = accessoireService.updateAccessoire(idAccessoire, accessoryDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedAccessoire);
     }
 
@@ -46,25 +46,25 @@ public class AccessoireController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<AccessoireDto>> getAllAccessoires(Pageable pageable) {
+    public ResponseEntity<Page<AccessoryDto>> getAllAccessoires(Pageable pageable) {
 
-        Page<AccessoireDto> accessoires = accessoireService.getAllAccessoires(pageable);
+        Page<AccessoryDto> accessoires = accessoireService.getAllAccessoires(pageable);
         return ResponseEntity.ok(accessoires);
     }
 
     @GetMapping("/vehicule/{idVehicule}")
-    public ResponseEntity<List<AccessoireDto>> getAccessoiresByVehicule(@PathVariable Long idVehicule) {
+    public ResponseEntity<List<AccessoryDto>> getAccessoiresByVehicule(@PathVariable Long idVehicule) {
 
-        List<AccessoireDto> accessoires = accessoireService.getAccessoiresByVehicule(idVehicule);
+        List<AccessoryDto> accessoires = accessoireService.getAccessoiresByVehicule(idVehicule);
         return ResponseEntity.ok(accessoires);
     }
 
     @PostMapping("/vehicule/{vehiculeId}")
-    public ResponseEntity<AccessoireDto> addAccessoireToVehicule(
+    public ResponseEntity<AccessoryDto> addAccessoireToVehicule(
                     @PathVariable Long vehiculeId,
-                    @Valid @RequestBody AccessoireDto accessoireDto) {
+                    @Valid @RequestBody AccessoryDto accessoryDto) {
 
-        AccessoireDto saved = accessoireService.addAccessoireToVehicule(vehiculeId, accessoireDto);
+        AccessoryDto saved = accessoireService.addAccessoireToVehicule(vehiculeId, accessoryDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 

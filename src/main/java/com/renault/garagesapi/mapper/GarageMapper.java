@@ -5,7 +5,7 @@ import com.renault.garagesapi.entity.Garage;
 import org.mapstruct.Mapper;
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {JourHoraireMapper.class})
+@Mapper(componentModel = "spring", uses = {DayScheduleMapper.class})
 public interface GarageMapper {
 
     public Garage toEntity(GarageDto garageDto);

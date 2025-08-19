@@ -28,5 +28,5 @@ public record GarageDto(
 		String email,
 
 		@NotNull(message = "Les horaires d'ouverture sont obligatoires")
-		List<@Valid JourHoraireDto> horairesOuverture
+		List<@Valid DayScheduleDto> horairesOuverture
 ) {}

@@ -1,6 +1,6 @@
 package com.renault.garagesapi.kafka.config;
 
-import com.renault.garagesapi.dto.VehiculeDto;
+import com.renault.garagesapi.dto.VehicleDto;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,12 +28,12 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<Long, VehiculeDto> producerFactory() {
+    public ProducerFactory<Long, VehicleDto> producerFactory() {
         return new DefaultKafkaProducerFactory<>(kafkaProducerConfig());
     }
 
     @Bean
-    public KafkaTemplate<Long, VehiculeDto> kafkaTemplate() {
+    public KafkaTemplate<Long, VehicleDto> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

@@ -1,16 +1,16 @@
 package com.renault.garagesapi.integration.controller;
 
+import com.renault.garagesapi.dto.DayScheduleDto;
 import com.renault.garagesapi.dto.GarageDto;
-import com.renault.garagesapi.dto.JourHoraireDto;
 import com.renault.garagesapi.dto.OpeningTimeDto;
 import com.renault.garagesapi.entity.Garage;
-import com.renault.garagesapi.entity.JourHoraire;
+import com.renault.garagesapi.entity.DaySchedule;
 import com.renault.garagesapi.entity.OpeningTime;
-import com.renault.garagesapi.entity.Vehicule;
+import com.renault.garagesapi.entity.Vehicle;
 import com.renault.garagesapi.enums.TypeCarburant;
 import com.renault.garagesapi.exception.dto.ErrorResponse;
 import com.renault.garagesapi.repository.GarageRepository;
-import com.renault.garagesapi.repository.VehiculeRepository;
+import com.renault.garagesapi.repository.VehicleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,14 +48,14 @@ class GarageControllerIntegrationTest {
     private GarageRepository garageRepository;
 
     @Autowired
-    VehiculeRepository vehiculeRepository;
+    VehicleRepository vehicleRepository;
 
     private String apiUrl;
 
     @BeforeEach
     void setUp() {
         apiUrl = "http://localhost:" + port + "/api/garages";
-        vehiculeRepository.deleteAll();
+        vehicleRepository.deleteAll();
         garageRepository.deleteAll();
     }
 
@@ -177,8 +177,8 @@ class GarageControllerIntegrationTest {
         creneaux.add(new OpeningTimeDto(LocalTime.of(8, 0), LocalTime.of(12, 30)));
         creneaux.add(new OpeningTimeDto(LocalTime.of(14, 0), LocalTime.of(18, 30)));
 
-        List<JourHoraireDto> horaires = List.of(
-                new JourHoraireDto(DayOfWeek.MONDAY, creneaux)
+        List<DayScheduleDto> horaires = List.of(
+                new DayScheduleDto(DayOfWeek.MONDAY, creneaux)
         );
 
         return new GarageDto(
@@ -210,10 +210,10 @@ class GarageControllerIntegrationTest {
         creneaux.add(new OpeningTime(LocalTime.of(8, 0), LocalTime.of(12, 30)));
         creneaux.add(new OpeningTime(LocalTime.of(14, 0), LocalTime.of(18, 30)));
 
-        List<JourHoraire> horaires = new ArrayList<>();
-        JourHoraire lundi = new JourHoraire();
+        List<DaySchedule> horaires = new ArrayList<>();
+        DaySchedule lundi = new DaySchedule();
         lundi.setJour(DayOfWeek.MONDAY);
-        lundi.setCreneaux(creneaux);
+        lundi.setOpeningTimes(creneaux);
 
         garage.setHorairesOuverture(horaires);
 
@@ -224,13 +224,13 @@ class GarageControllerIntegrationTest {
 
         Garage garage = createGarage("Garage Test with vehicules");
 
-        Vehicule vehicule = new Vehicule();
-        vehicule.setBrand("Clio 4");
-        vehicule.setAnneeFabrication(Year.of(2017));
-        vehicule.setTypeCarburant(TypeCarburant.DIESEL);
-        vehicule.setGarage(garage);
+        Vehicle vehicle = new Vehicle();
+        vehicle.setBrand("Clio 4");
+        vehicle.setAnneeFabrication(Year.of(2017));
+        vehicle.setTypeCarburant(TypeCarburant.DIESEL);
+        vehicle.setGarage(garage);
 
-        garage.setVehicules(List.of(vehicule));
+        garage.setVehicles(List.of(vehicle));
         return garageRepository.save(garage);
     }
 }

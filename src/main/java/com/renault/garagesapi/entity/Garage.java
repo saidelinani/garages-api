@@ -45,9 +45,9 @@ public class Garage {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "garage", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<JourHoraire> horairesOuverture = new ArrayList<>();
+    private List<DaySchedule> horairesOuverture = new ArrayList<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "garage", cascade = CascadeType.PERSIST)
-    private List<Vehicule> vehicules = new ArrayList<>();
+    private List<Vehicle> vehicles = new ArrayList<>();
 }

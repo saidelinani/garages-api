@@ -1,7 +1,7 @@
 package com.renault.garagesapi.controller;
 
-import com.renault.garagesapi.dto.VehiculeDto;
-import com.renault.garagesapi.service.IVehiculeService;
+import com.renault.garagesapi.dto.VehicleDto;
+import com.renault.garagesapi.service.IVehicleService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,34 +18,34 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/vehicules")
-public class VehiculeController {
+public class VehicleController {
 
-    private final IVehiculeService vehiculeService;
+    private final IVehicleService vehiculeService;
 
-    public VehiculeController(IVehiculeService vehiculeService) {
+    public VehicleController(IVehicleService vehiculeService) {
         this.vehiculeService = vehiculeService;
     }
 
     @PostMapping
-    public ResponseEntity<VehiculeDto> addVehicule(@Valid @RequestBody VehiculeDto vehiculeDto) {
-        VehiculeDto savedVehicule = vehiculeService.addVehicule(vehiculeDto);
+    public ResponseEntity<VehicleDto> addVehicule(@Valid @RequestBody VehicleDto vehicleDto) {
+        VehicleDto savedVehicule = vehiculeService.addVehicule(vehicleDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedVehicule);
     }
 
     @PostMapping("/garage/{garageId}")
-    public ResponseEntity<VehiculeDto> addVehiculeToGarage(@PathVariable Long garageId, @RequestBody VehiculeDto vehiculeDto){
-        VehiculeDto savedVehicule = vehiculeService.addVehiculeToGarage(garageId, vehiculeDto);
+    public ResponseEntity<VehicleDto> addVehiculeToGarage(@PathVariable Long garageId, @RequestBody VehicleDto vehicleDto){
+        VehicleDto savedVehicule = vehiculeService.addVehiculeToGarage(garageId, vehicleDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedVehicule);
     }
 
     @GetMapping("/{idVehicule}")
-    public ResponseEntity<VehiculeDto> getVehiculeById(@PathVariable Long idVehicule) {
+    public ResponseEntity<VehicleDto> getVehiculeById(@PathVariable Long idVehicule) {
         return ResponseEntity.ok(vehiculeService.getVehiculeById(idVehicule));
     }
 
     @PutMapping("/{idVehicule}")
-    public ResponseEntity<VehiculeDto> updateVehicule(@PathVariable Long idVehicule, @Valid @RequestBody VehiculeDto vehiculeDto) {
-        VehiculeDto savedVehicule = vehiculeService.updateVehicule(idVehicule, vehiculeDto);
+    public ResponseEntity<VehicleDto> updateVehicule(@PathVariable Long idVehicule, @Valid @RequestBody VehicleDto vehicleDto) {
+        VehicleDto savedVehicule = vehiculeService.updateVehicule(idVehicule, vehicleDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedVehicule);
     }
 
@@ -56,9 +56,9 @@ public class VehiculeController {
     }
 
     @GetMapping("/garage/{idGarage}")
-    public ResponseEntity<List<VehiculeDto>> getVehiculesByGarage(@PathVariable Long idGarage) {
+    public ResponseEntity<List<VehicleDto>> getVehiculesByGarage(@PathVariable Long idGarage) {
 
-        List<VehiculeDto> vehicules = vehiculeService.getVehiculesByGarage(idGarage);
+        List<VehicleDto> vehicules = vehiculeService.getVehiculesByGarage(idGarage);
         return ResponseEntity.ok(vehicules);
     }
 }
