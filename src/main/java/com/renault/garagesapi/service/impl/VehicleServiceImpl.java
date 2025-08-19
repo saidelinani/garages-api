@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class VehicleServiceImpl implements IVehicleService {
 
-    public static final int MAX_VEHICULES_PAR_GARAGE = 2;
+    public static final int MAX_VEHICLES_PER_GARAGE = 2;
 
     private final VehicleRepository vehicleRepository;
     private final VehicleMapper vehicleMapper;
@@ -53,8 +53,8 @@ public class VehicleServiceImpl implements IVehicleService {
 
         var garage = garageService.findGarageById(garageId);
 
-        if (garage.getVehicles().size() >= MAX_VEHICULES_PAR_GARAGE) {
-            throw new GarageFullException("Le garage a atteint sa capacité maximale de "+MAX_VEHICULES_PAR_GARAGE+" véhicules");
+        if (garage.getVehicles().size() >= MAX_VEHICLES_PER_GARAGE) {
+            throw new GarageFullException(String.format("Le garage a atteint sa capacité maximale de %d véhicules", MAX_VEHICLES_PER_GARAGE));
         }
 
         Vehicle vehicle = vehicleMapper.toEntity(vehicleDto);
@@ -90,8 +90,9 @@ public class VehicleServiceImpl implements IVehicleService {
 
     @Override
     public VehicleDto getVehiculeById(Long id) {
-
-        return vehicleMapper.toDto(findVehiculeById(id));
+        var vehicle = vehicleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Véhicule non trouvé"));
+        return vehicleMapper.toDto(vehicle);
     }
 
     @Override
@@ -110,10 +111,5 @@ public class VehicleServiceImpl implements IVehicleService {
         return vehicles.stream()
                 .map(vehicleMapper::toDto)
                 .collect(Collectors.toList());
-    }
-
-    private Vehicle findVehiculeById(Long id) {
-        return vehicleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Véhicule non trouvé"));
     }
 }
