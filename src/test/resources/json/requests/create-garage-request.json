@@ -10,13 +10,11 @@
       "openingTimes": [
         {
           "startTime": "08:00:00",
-          "endTime": "12:30:00",
-          "validPeriod": true
+          "endTime": "12:30:00"
         },
         {
           "startTime": "14:00:00",
-          "endTime": "18:30:00",
-          "validPeriod": true
+          "endTime": "18:30:00"
         }
       ]
     }

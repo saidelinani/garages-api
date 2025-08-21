@@ -5,5 +5,19 @@
   "address": "Test adress",
   "phoneNumber": "0585655214",
   "email": "test@garage.ma",
-  "daySchedules": []
+  "daySchedules": [
+    {
+      "dayOfWeek": "MONDAY",
+      "openingTimes": [
+        {
+          "startTime": "08:00:00",
+          "endTime": "12:30:00"
+        },
+        {
+          "startTime": "14:00:00",
+          "endTime": "18:30:00"
+        }
+      ]
+    }
+  ]
 }

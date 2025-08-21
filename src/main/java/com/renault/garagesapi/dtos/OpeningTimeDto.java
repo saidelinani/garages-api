@@ -1,5 +1,6 @@
 package com.renault.garagesapi.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalTime;
@@ -12,6 +13,7 @@ public record OpeningTimeDto(
 		@NotNull(message = "End time is required")
 		LocalTime endTime
 ) {
+	@JsonIgnore
 	@AssertTrue(message = "Start time must be before end time")
 	public boolean isValidPeriod() {
 		return startTime != null && endTime != null && startTime.isBefore(endTime);

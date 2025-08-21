@@ -1,10 +1,7 @@
 package com.renault.garagesapi.integration.controllers;
 
-import com.renault.garagesapi.entities.DaySchedule;
 import com.renault.garagesapi.entities.Garage;
-import com.renault.garagesapi.entities.OpeningTime;
-import com.renault.garagesapi.entities.Vehicle;
-import com.renault.garagesapi.enums.FuelType;
+import com.renault.garagesapi.factory.GarageTestFactory;
 import com.renault.garagesapi.repositories.GarageRepository;
 import com.renault.garagesapi.repositories.VehicleRepository;
 import com.renault.garagesapi.tools.JsonReader;
@@ -21,10 +18,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.DayOfWeek;
-import java.time.LocalTime;
-import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,6 +41,9 @@ class GarageControllerIntegrationTest {
 
     @Autowired
     private VehicleRepository vehicleRepository;
+
+    @Autowired
+    private GarageTestFactory garageTestFactory;
 
     @BeforeEach
     @Transactional
@@ -105,7 +101,7 @@ class GarageControllerIntegrationTest {
     @DisplayName("GET /api/garages/{idGarage} - Doit récupérer un garage par son ID")
     void shouldGetGarageById() throws Exception {
 
-        Garage savedGarage = createAndSaveGarage("Garage Test");
+        Garage savedGarage = garageTestFactory.createAndSaveGarage("Garage Test");
 
         MvcResult result = mockMvc.perform(get("/api/garages/{idGarage}", savedGarage.getId())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -142,7 +138,7 @@ class GarageControllerIntegrationTest {
     @DisplayName("DELETE /api/garages/{idGarage} - Doit retourner 400 pour un garage avec véhicules")
     void shouldReturn400WhenDeletingGarageWithVehicules() throws Exception {
 
-        Garage savedGarage = createAndSaveGarageWithVehicules();
+        Garage savedGarage = garageTestFactory.createAndSaveGarageWithVehicules();
 
         MvcResult result = mockMvc.perform(delete("/api/garages/{idGarage}", savedGarage.getId()))
                 .andExpect(status().isBadRequest())
@@ -175,7 +171,7 @@ class GarageControllerIntegrationTest {
     @DisplayName("DELETE /api/garages/{idGarage} - Doit supprimer un garage sans véhicules")
     void shouldDeleteGarageSuccessfully() throws Exception {
 
-        Garage savedGarage = createAndSaveGarage("Garage à supprimer");
+        Garage savedGarage = garageTestFactory.createAndSaveGarage("Garage à supprimer");
 
         mockMvc.perform(delete("/api/garages/{idGarage}", savedGarage.getId()))
                 .andExpect(status().isOk());
@@ -188,8 +184,8 @@ class GarageControllerIntegrationTest {
     @DisplayName("GET /api/garages - Doit retourner une page de garages")
     void shouldReturnPageOfGarages() throws Exception {
 
-        createAndSaveGarage("Garage 1");
-        createAndSaveGarage("Garage 2");
+        garageTestFactory.createAndSaveGarage("Garage 1");
+        garageTestFactory.createAndSaveGarage("Garage 2");
 
         MvcResult result = mockMvc.perform(get("/api/garages")
                         .param("page", "0")
@@ -209,46 +205,4 @@ class GarageControllerIntegrationTest {
         JSONAssert.assertEquals(expectedJson, responseBody, JSONCompareMode.LENIENT);
     }
 
-    @Transactional
-    public Garage createAndSaveGarage(String name) {
-        return garageRepository.save(createGarage(name));
-    }
-
-    public Garage createGarage(String name) {
-
-        Garage garage = new Garage();
-        garage.setName(name);
-        garage.setAddress("Test adress");
-        garage.setCity("Test");
-        garage.setPhoneNumber("0585655214");
-        garage.setEmail("test@garage.ma");
-
-        List<OpeningTime> creneaux = new ArrayList<>();
-        creneaux.add(new OpeningTime(LocalTime.of(8, 0), LocalTime.of(12, 30)));
-        creneaux.add(new OpeningTime(LocalTime.of(14, 0), LocalTime.of(18, 30)));
-
-        List<DaySchedule> horaires = new ArrayList<>();
-        DaySchedule lundi = new DaySchedule();
-        lundi.setDayOfWeek(DayOfWeek.MONDAY);
-        lundi.setOpeningTimes(creneaux);
-
-        garage.setDaySchedules(horaires);
-
-        return garage;
-    }
-
-    @Transactional
-    public Garage createAndSaveGarageWithVehicules() {
-
-        Garage garage = createGarage("Garage Test with vehicules");
-
-        Vehicle vehicle = new Vehicle();
-        vehicle.setBrand("Clio 4");
-        vehicle.setYearOfManufacture(Year.of(2017));
-        vehicle.setFuelType(FuelType.DIESEL);
-        vehicle.setGarage(garage);
-
-        garage.setVehicles(List.of(vehicle));
-        return garageRepository.save(garage);
-    }
 }
