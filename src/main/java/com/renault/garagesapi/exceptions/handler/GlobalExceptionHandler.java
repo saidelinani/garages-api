@@ -1,11 +1,11 @@
-package com.renault.garagesapi.exception.handler;
+package com.renault.garagesapi.exceptions.handler;
 
-import com.renault.garagesapi.exception.AccessoryAlreadyAssignedException;
-import com.renault.garagesapi.exception.GarageFullException;
-import com.renault.garagesapi.exception.GarageHasVehiclesException;
-import com.renault.garagesapi.exception.ResourceNotFoundException;
-import com.renault.garagesapi.exception.dto.ErrorResponse;
-import com.renault.garagesapi.exception.dto.ValidationErrorResponse;
+import com.renault.garagesapi.exceptions.AccessoryAlreadyAssignedException;
+import com.renault.garagesapi.exceptions.GarageFullException;
+import com.renault.garagesapi.exceptions.GarageHasVehiclesException;
+import com.renault.garagesapi.exceptions.ResourceNotFoundException;
+import com.renault.garagesapi.exceptions.dto.ErrorResponse;
+import com.renault.garagesapi.exceptions.dto.ValidationErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

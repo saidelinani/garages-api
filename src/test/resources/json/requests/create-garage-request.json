@@ -1,0 +1,24 @@
+{
+  "name": "Garage Casablanca",
+  "city": "Casablanca",
+  "address": "44 Ain sebaa",
+  "phoneNumber": "0567669786",
+  "email": "casa@renoult.ma",
+  "daySchedules": [
+    {
+      "dayOfWeek": "MONDAY",
+      "openingTimes": [
+        {
+          "startTime": "08:00:00",
+          "endTime": "12:30:00",
+          "validPeriod": true
+        },
+        {
+          "startTime": "14:00:00",
+          "endTime": "18:30:00",
+          "validPeriod": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-package com.renault.garagesapi.entity;
+package com.renault.garagesapi.entities;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -21,6 +21,7 @@ import java.util.List;
 @Table(name = "GARAGES")
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

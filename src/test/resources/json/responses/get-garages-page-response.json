@@ -1,0 +1,47 @@
+{
+  "content": [
+    {
+      "id": 1,
+      "name": "Garage 1",
+      "city": "Test",
+      "address": "Test adress",
+      "phoneNumber": "0585655214",
+      "email": "test@garage.ma",
+      "daySchedules": []
+    },
+    {
+      "id": 2,
+      "name": "Garage 2",
+      "city": "Test",
+      "address": "Test adress",
+      "phoneNumber": "0585655214",
+      "email": "test@garage.ma",
+      "daySchedules": []
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 10,
+    "sort": {
+      "empty": true,
+      "sorted": false,
+      "unsorted": true
+    },
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalPages": 1,
+  "totalElements": 2,
+  "last": true,
+  "size": 10,
+  "number": 0,
+  "sort": {
+    "empty": true,
+    "sorted": false,
+    "unsorted": true
+  },
+  "first": true,
+  "numberOfElements": 2,
+  "empty": false
+}

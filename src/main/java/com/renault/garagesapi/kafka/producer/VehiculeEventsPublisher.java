@@ -1,6 +1,6 @@
 package com.renault.garagesapi.kafka.producer;
 
-import com.renault.garagesapi.dto.VehicleDto;
+import com.renault.garagesapi.dtos.VehicleDto;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 

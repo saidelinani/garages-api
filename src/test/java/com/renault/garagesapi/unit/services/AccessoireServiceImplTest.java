@@ -1,4 +1,4 @@
-package com.renault.garagesapi.tests.service;
+package com.renault.garagesapi.unit.services;
 
 import com.renault.garagesapi.dtos.AccessoryDto;
 import com.renault.garagesapi.dtos.VehicleDto;

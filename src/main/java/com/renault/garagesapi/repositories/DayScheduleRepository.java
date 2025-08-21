@@ -1,4 +1,4 @@
-package com.renault.garagesapi.repository;
+package com.renault.garagesapi.repositories;
 
 import com.renault.garagesapi.entities.DaySchedule;
 import org.springframework.data.jpa.repository.JpaRepository;

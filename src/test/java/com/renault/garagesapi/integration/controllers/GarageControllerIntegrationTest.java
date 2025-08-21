@@ -1,30 +1,25 @@
-package com.renault.garagesapi.integration.controller;
+package com.renault.garagesapi.integration.controllers;
 
-import com.renault.garagesapi.dto.DayScheduleDto;
-import com.renault.garagesapi.dto.GarageDto;
-import com.renault.garagesapi.dto.OpeningTimeDto;
-import com.renault.garagesapi.entities.Garage;
 import com.renault.garagesapi.entities.DaySchedule;
+import com.renault.garagesapi.entities.Garage;
 import com.renault.garagesapi.entities.OpeningTime;
 import com.renault.garagesapi.entities.Vehicle;
 import com.renault.garagesapi.enums.FuelType;
-import com.renault.garagesapi.exception.dto.ErrorResponse;
 import com.renault.garagesapi.repositories.GarageRepository;
 import com.renault.garagesapi.repositories.VehicleRepository;
+import com.renault.garagesapi.tools.JsonReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -33,163 +28,185 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
+@AutoConfigureMockMvc
 @ActiveProfiles("test")
 class GarageControllerIntegrationTest {
 
-    @LocalServerPort
-    private int port;
-
     @Autowired
-    private TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
 
     @Autowired
     private GarageRepository garageRepository;
 
     @Autowired
-    VehicleRepository vehicleRepository;
-
-    private String apiUrl;
+    private VehicleRepository vehicleRepository;
 
     @BeforeEach
+    @Transactional
     void setUp() {
-        apiUrl = "http://localhost:" + port + "/api/garages";
         vehicleRepository.deleteAll();
         garageRepository.deleteAll();
     }
 
     @Test
     @DisplayName("POST /api/garages - Doit créer un garage")
-    void shouldCreateGarage() {
+    void shouldCreateGarage() throws Exception {
 
-        GarageDto garageDto = createGarageDto();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<GarageDto> request = new HttpEntity<>(garageDto, headers);
+        String requestJson = JsonReader.loadJsonFromResources("requests/create-garage-request.json");
+        String expectedJson = JsonReader.loadJsonFromResources("responses/created-garage-response.json");
 
-        ResponseEntity<GarageDto> response = restTemplate.postForEntity(apiUrl, request, GarageDto.class);
+        MvcResult result = mockMvc.perform(post("/api/garages")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().id()).isNotNull();
-        assertThat(response.getBody().name()).isEqualTo("Garage Casablanca");
-        assertThat(response.getBody().city()).isEqualTo("Casablanca");
-        assertThat(response.getBody().address()).isEqualTo("44 Ain sebaa");
-        assertThat(response.getBody().phoneNumber()).isEqualTo("0567669786");
-        assertThat(response.getBody().email()).isEqualTo("casa@renoult.ma");
-        assertThat(response.getBody().daySchedules()).hasSize(1);
+        String responseBody = result.getResponse().getContentAsString();
 
-        Garage garage = garageRepository.findById(response.getBody().id()).get();
-        assertThat(garage).isNotNull();
-        assertThat(garage.getName()).isEqualTo("Garage Casablanca");
+        JSONAssert.assertEquals(expectedJson, responseBody, JSONCompareMode.LENIENT);
+
+        // Check in database
+        List<Garage> garages = garageRepository.findAll();
+        assertThat(garages).hasSize(1);
     }
 
     @Test
     @DisplayName("POST /api/garages - Doit retourner 400 (données invalides)")
-    void shouldReturnInvalidData() {
+    void shouldReturnInvalidData() throws Exception {
 
-        GarageDto invalidGarageDto = new GarageDto(
-                null,
-                "",
-                "",
-                "",
-                "",
-                "emailIinvalide",
-                null
-        );
+        String requestJson = JsonReader.loadJsonFromResources("requests/create-garage-invalid-data-request.json");
+        String expectedJson = JsonReader.loadJsonFromResources("errors/create-garage-invalid-data-response.json");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<GarageDto> request = new HttpEntity<>(invalidGarageDto, headers);
+        MvcResult result = mockMvc.perform(post("/api/garages")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
 
-        ResponseEntity<Map> response = restTemplate.postForEntity(apiUrl, request, Map.class);
+        String responseBody = result.getResponse().getContentAsString();
+        JSONAssert.assertEquals(expectedJson, responseBody, JSONCompareMode.LENIENT);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-
-        // Vérifier qu'aucun garage n'a été créé
+        // Check that no garage has been created
         List<Garage> garages = garageRepository.findAll();
         assertThat(garages).isEmpty();
     }
 
     @Test
     @DisplayName("GET /api/garages/{idGarage} - Doit récupérer un garage par son ID")
-    void shouldGetGarageById() {
+    void shouldGetGarageById() throws Exception {
 
         Garage savedGarage = createAndSaveGarage("Garage Test");
 
-        Garage test = garageRepository.findById(savedGarage.getId()).get();
+        MvcResult result = mockMvc.perform(get("/api/garages/{idGarage}", savedGarage.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
 
-        String url = apiUrl + "/" + savedGarage.getId();
-        ResponseEntity<GarageDto> response = restTemplate.getForEntity(url, GarageDto.class);
+        String responseBody = result.getResponse().getContentAsString();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().id()).isEqualTo(savedGarage.getId());
-        assertThat(response.getBody().name()).isEqualTo("Garage Test");
-        assertThat(response.getBody().city()).isEqualTo("Test");
-        assertThat(response.getBody().address()).isEqualTo("Test adress");
-        assertThat(response.getBody().phoneNumber()).isEqualTo("0585655214");
-        assertThat(response.getBody().email()).isEqualTo("test@garage.ma");
+        String expectedJson = JsonReader.loadJsonWithPlaceholders(
+                "responses/get-garage-response.json",
+                Map.of("id", savedGarage.getId().toString())
+        );
+
+        JSONAssert.assertEquals(expectedJson, responseBody, JSONCompareMode.STRICT);
     }
 
     @Test
     @DisplayName("GET /api/garages/{idGarage} - Doit retourner 404 pour un garage inexistant")
-    void shouldReturnGarageNotFound() {
+    void shouldReturnGarageNotFound() throws Exception {
 
-        String url = apiUrl + "/15";
-        ResponseEntity<ErrorResponse> response = restTemplate.getForEntity(url, ErrorResponse.class);
+        MvcResult result = mockMvc.perform(get("/api/garages/{idGarage}", 20L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().message()).isEqualTo("Garage non trouvé");
+        String responseBody = result.getResponse().getContentAsString();
+        String expectedJson = JsonReader.loadJsonFromResources("errors/garage-not-found.json");
+        JSONAssert.assertEquals(expectedJson, responseBody, JSONCompareMode.LENIENT);
     }
 
     @Test
     @DisplayName("DELETE /api/garages/{idGarage} - Doit retourner 400 pour un garage avec véhicules")
-    void shouldReturn400WhenDeletingGarageWithVehicules() {
+    void shouldReturn400WhenDeletingGarageWithVehicules() throws Exception {
 
         Garage savedGarage = createAndSaveGarageWithVehicules();
 
-        String url = apiUrl + "/" + savedGarage.getId();
-        ResponseEntity<ErrorResponse> response = restTemplate.exchange(url, HttpMethod.DELETE, null, ErrorResponse.class);
+        MvcResult result = mockMvc.perform(delete("/api/garages/{idGarage}", savedGarage.getId()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody().message()).isEqualTo("Impossible de supprimer un garage contenant des véhicules");
+        String responseBody = result.getResponse().getContentAsString();
+        String expectedJson = JsonReader.loadJsonFromResources("errors/cannot-delete-garage-with-vehicles.json");
+        JSONAssert.assertEquals(expectedJson, responseBody, JSONCompareMode.LENIENT);
 
-        // Vérifier que le garage existe toujours en base de données
+        // Check that the garage still exists in the database
         assertThat(garageRepository.findById(savedGarage.getId())).isPresent();
     }
 
     @Test
     @DisplayName("DELETE /api/garages/{idGarage} - Doit retourner 404 pour un garage inexistant")
-    void shouldReturn404WhenDeletingNonExistentGarage() {
+    void shouldReturn404WhenDeletingNonExistentGarage() throws Exception {
 
-        String url = apiUrl + "/20";
-        ResponseEntity<ErrorResponse> response = restTemplate.exchange(url, HttpMethod.DELETE, null, ErrorResponse.class);
+        MvcResult result = mockMvc.perform(delete("/api/garages/{idGarage}", 20L))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().message()).isEqualTo("Garage non trouvé");
+        String responseBody = result.getResponse().getContentAsString();
+        String expectedJson = JsonReader.loadJsonFromResources("errors/garage-not-found.json");
+        JSONAssert.assertEquals(expectedJson, responseBody, JSONCompareMode.LENIENT);
     }
 
-    private GarageDto createGarageDto() {
+    @Test
+    @DisplayName("DELETE /api/garages/{idGarage} - Doit supprimer un garage sans véhicules")
+    void shouldDeleteGarageSuccessfully() throws Exception {
 
-        List<OpeningTimeDto> creneaux = new ArrayList<>();
-        creneaux.add(new OpeningTimeDto(LocalTime.of(8, 0), LocalTime.of(12, 30)));
-        creneaux.add(new OpeningTimeDto(LocalTime.of(14, 0), LocalTime.of(18, 30)));
+        Garage savedGarage = createAndSaveGarage("Garage à supprimer");
 
-        List<DayScheduleDto> horaires = List.of(
-                new DayScheduleDto(DayOfWeek.MONDAY, creneaux)
-        );
+        mockMvc.perform(delete("/api/garages/{idGarage}", savedGarage.getId()))
+                .andExpect(status().isOk());
 
-        return new GarageDto(
-                null,
-                "Garage Casablanca",
-                "Casablanca",
-                "44 Ain sebaa",
-                "0567669786",
-                "casa@renoult.ma",
-                horaires
-        );
+        // Check that the garage has been deleted from the database
+        assertThat(garageRepository.findById(savedGarage.getId())).isEmpty();
+    }
+
+    @Test
+    @DisplayName("GET /api/garages - Doit retourner une page de garages")
+    void shouldReturnPageOfGarages() throws Exception {
+
+        createAndSaveGarage("Garage 1");
+        createAndSaveGarage("Garage 2");
+
+        MvcResult result = mockMvc.perform(get("/api/garages")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.totalElements").value(2))
+                .andExpect(jsonPath("$.totalPages").value(1))
+                .andReturn();
+
+        String responseBody = result.getResponse().getContentAsString();
+        System.out.println("responseBody: " + responseBody);
+        String expectedJson = JsonReader.loadJsonFromResources("responses/get-garages-page-response.json");
+        JSONAssert.assertEquals(expectedJson, responseBody, JSONCompareMode.LENIENT);
     }
 
     @Transactional
@@ -220,7 +237,8 @@ class GarageControllerIntegrationTest {
         return garage;
     }
 
-    private Garage createAndSaveGarageWithVehicules() {
+    @Transactional
+    public Garage createAndSaveGarageWithVehicules() {
 
         Garage garage = createGarage("Garage Test with vehicules");
 

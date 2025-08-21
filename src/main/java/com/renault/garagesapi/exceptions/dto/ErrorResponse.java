@@ -1,8 +1,7 @@
-package com.renault.garagesapi.exception.dto;
+package com.renault.garagesapi.exceptions.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 public record ErrorResponse(
         String message,

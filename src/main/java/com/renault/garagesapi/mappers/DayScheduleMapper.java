@@ -1,6 +1,6 @@
-package com.renault.garagesapi.mapper;
+package com.renault.garagesapi.mappers;
 
-import com.renault.garagesapi.dto.DayScheduleDto;
+import com.renault.garagesapi.dtos.DayScheduleDto;
 import com.renault.garagesapi.entities.DaySchedule;
 import org.mapstruct.Mapper;
 import java.util.List;

@@ -1,8 +1,8 @@
 package com.renault.garagesapi;
 
-import com.renault.garagesapi.dto.VehicleDto;
+import com.renault.garagesapi.dtos.VehicleDto;
 import com.renault.garagesapi.enums.FuelType;
-import com.renault.garagesapi.repository.GarageRepository;
+import com.renault.garagesapi.repositories.GarageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

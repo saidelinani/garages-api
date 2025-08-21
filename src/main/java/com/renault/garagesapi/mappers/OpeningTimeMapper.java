@@ -1,6 +1,6 @@
-package com.renault.garagesapi.mapper;
+package com.renault.garagesapi.mappers;
 
-import com.renault.garagesapi.dto.OpeningTimeDto;
+import com.renault.garagesapi.dtos.OpeningTimeDto;
 import com.renault.garagesapi.entities.OpeningTime;
 import org.mapstruct.Mapper;
 import java.util.List;

@@ -1,6 +1,6 @@
-package com.renault.garagesapi.service;
+package com.renault.garagesapi.services;
 
-import com.renault.garagesapi.dto.VehicleDto;
+import com.renault.garagesapi.dtos.VehicleDto;
 
 import java.util.List;
 

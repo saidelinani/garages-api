@@ -1,7 +1,7 @@
-package com.renault.garagesapi.controller;
+package com.renault.garagesapi.controllers;
 
-import com.renault.garagesapi.dto.GarageDto;
-import com.renault.garagesapi.service.IGarageService;
+import com.renault.garagesapi.dtos.GarageDto;
+import com.renault.garagesapi.services.IGarageService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

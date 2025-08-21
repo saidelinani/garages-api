@@ -1,0 +1,14 @@
+{
+  "message": "Erreurs de validation",
+  "status": 400,
+  "error": "Bad Request",
+  "path": "/api/garages",
+  "fieldErrors": {
+    "daySchedules": "Opening times are required",
+    "address": "Address is required",
+    "phoneNumber": "Phone number is required",
+    "city": "City is required",
+    "name": "Name is required",
+    "email": "Email must be valid"
+  }
+}

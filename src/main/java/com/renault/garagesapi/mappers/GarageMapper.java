@@ -1,6 +1,6 @@
-package com.renault.garagesapi.mapper;
+package com.renault.garagesapi.mappers;
 
-import com.renault.garagesapi.dto.GarageDto;
+import com.renault.garagesapi.dtos.GarageDto;
 import com.renault.garagesapi.entities.Garage;
 import org.mapstruct.Mapper;
 import java.util.List;

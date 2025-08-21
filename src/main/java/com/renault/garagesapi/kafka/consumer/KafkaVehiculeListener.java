@@ -1,6 +1,6 @@
 package com.renault.garagesapi.kafka.consumer;
 
-import com.renault.garagesapi.dto.VehicleDto;
+import com.renault.garagesapi.dtos.VehicleDto;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 

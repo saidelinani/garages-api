@@ -1,6 +1,6 @@
 package com.renault.garagesapi.kafka.config;
 
-import com.renault.garagesapi.dto.VehicleDto;
+import com.renault.garagesapi.dtos.VehicleDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,15 +1,15 @@
-package com.renault.garagesapi.service.impl;
+package com.renault.garagesapi.services.impl;
 
-import com.renault.garagesapi.dto.AccessoryDto;
+import com.renault.garagesapi.dtos.AccessoryDto;
 import com.renault.garagesapi.entities.Accessory;
 import com.renault.garagesapi.entities.Vehicle;
-import com.renault.garagesapi.exception.AccessoryAlreadyAssignedException;
-import com.renault.garagesapi.exception.ResourceNotFoundException;
-import com.renault.garagesapi.mapper.AccessoryMapper;
-import com.renault.garagesapi.mapper.VehicleMapper;
-import com.renault.garagesapi.repository.AccessoryRepository;
-import com.renault.garagesapi.service.IAccessoryService;
-import com.renault.garagesapi.service.IVehicleService;
+import com.renault.garagesapi.exceptions.AccessoryAlreadyAssignedException;
+import com.renault.garagesapi.exceptions.ResourceNotFoundException;
+import com.renault.garagesapi.mappers.AccessoryMapper;
+import com.renault.garagesapi.mappers.VehicleMapper;
+import com.renault.garagesapi.repositories.AccessoryRepository;
+import com.renault.garagesapi.services.IAccessoryService;
+import com.renault.garagesapi.services.IVehicleService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -58,6 +58,7 @@ public class AccessoryServiceImpl implements IAccessoryService {
     }
 
     @Override
+    @Transactional
     public AccessoryDto updateAccessoire(Long id, AccessoryDto accessoryDto) {
 
         Accessory existingAccessory = findAccessoireById(id);
@@ -94,6 +95,7 @@ public class AccessoryServiceImpl implements IAccessoryService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     private Accessory findAccessoireById(Long id) {
         return accessoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Accessoire non trouvé"));

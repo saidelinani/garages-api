@@ -1,4 +1,4 @@
-package com.renault.garagesapi.entity;
+package com.renault.garagesapi.entities;
 
 import com.renault.garagesapi.enums.FuelType;
 import jakarta.persistence.CascadeType;

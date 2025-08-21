@@ -1,0 +1,9 @@
+{
+  "id": ${id},
+  "name": "Garage Test",
+  "city": "Test",
+  "address": "Test adress",
+  "phoneNumber": "0585655214",
+  "email": "test@garage.ma",
+  "daySchedules": []
+}

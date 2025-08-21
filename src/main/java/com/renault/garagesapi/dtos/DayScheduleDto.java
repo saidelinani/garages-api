@@ -1,4 +1,4 @@
-package com.renault.garagesapi.dto;
+package com.renault.garagesapi.dtos;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;

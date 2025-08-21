@@ -1,14 +1,14 @@
-package com.renault.garagesapi.service.impl;
+package com.renault.garagesapi.services.impl;
 
-import com.renault.garagesapi.dto.VehicleDto;
+import com.renault.garagesapi.dtos.VehicleDto;
 import com.renault.garagesapi.entities.Vehicle;
 import com.renault.garagesapi.kafka.producer.VehiculeEventsPublisher;
-import com.renault.garagesapi.exception.GarageFullException;
-import com.renault.garagesapi.exception.ResourceNotFoundException;
-import com.renault.garagesapi.mapper.VehicleMapper;
-import com.renault.garagesapi.repository.VehicleRepository;
-import com.renault.garagesapi.service.IGarageService;
-import com.renault.garagesapi.service.IVehicleService;
+import com.renault.garagesapi.exceptions.GarageFullException;
+import com.renault.garagesapi.exceptions.ResourceNotFoundException;
+import com.renault.garagesapi.mappers.VehicleMapper;
+import com.renault.garagesapi.repositories.VehicleRepository;
+import com.renault.garagesapi.services.IGarageService;
+import com.renault.garagesapi.services.IVehicleService;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,6 +89,7 @@ public class VehicleServiceImpl implements IVehicleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public VehicleDto getVehiculeById(Long id) {
         var vehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Véhicule non trouvé"));
@@ -96,6 +97,7 @@ public class VehicleServiceImpl implements IVehicleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<VehicleDto> getVehiculesByGarage(Long garageId) {
         List<Vehicle> vehicles = vehicleRepository.findByGarageId(garageId);
 
@@ -105,6 +107,7 @@ public class VehicleServiceImpl implements IVehicleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<VehicleDto> getVehiculesByBrand(String modele) {
         List<Vehicle> vehicles = vehicleRepository.findByBrand(modele);
 

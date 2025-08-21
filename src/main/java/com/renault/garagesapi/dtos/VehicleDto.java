@@ -1,4 +1,4 @@
-package com.renault.garagesapi.dto;
+package com.renault.garagesapi.dtos;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;

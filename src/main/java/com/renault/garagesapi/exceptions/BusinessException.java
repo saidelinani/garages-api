@@ -1,4 +1,4 @@
-package com.renault.garagesapi.exception;
+package com.renault.garagesapi.exceptions;
 
 public class BusinessException extends RuntimeException {
 

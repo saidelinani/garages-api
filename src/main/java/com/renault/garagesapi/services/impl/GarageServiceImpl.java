@@ -1,13 +1,13 @@
-package com.renault.garagesapi.service.impl;
+package com.renault.garagesapi.services.impl;
 
-import com.renault.garagesapi.dto.GarageDto;
+import com.renault.garagesapi.dtos.GarageDto;
 import com.renault.garagesapi.entities.DaySchedule;
 import com.renault.garagesapi.entities.Garage;
-import com.renault.garagesapi.exception.GarageHasVehiclesException;
-import com.renault.garagesapi.exception.ResourceNotFoundException;
-import com.renault.garagesapi.mapper.GarageMapper;
-import com.renault.garagesapi.repository.GarageRepository;
-import com.renault.garagesapi.service.IGarageService;
+import com.renault.garagesapi.exceptions.GarageHasVehiclesException;
+import com.renault.garagesapi.exceptions.ResourceNotFoundException;
+import com.renault.garagesapi.mappers.GarageMapper;
+import com.renault.garagesapi.repositories.GarageRepository;
+import com.renault.garagesapi.services.IGarageService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

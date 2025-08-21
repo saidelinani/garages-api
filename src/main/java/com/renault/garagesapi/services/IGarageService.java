@@ -1,6 +1,6 @@
-package com.renault.garagesapi.service;
+package com.renault.garagesapi.services;
 
-import com.renault.garagesapi.dto.GarageDto;
+import com.renault.garagesapi.dtos.GarageDto;
 import com.renault.garagesapi.entities.Garage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,4 +1,4 @@
-package com.renault.garagesapi.entity;
+package com.renault.garagesapi.entities;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
