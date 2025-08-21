@@ -1,7 +1,7 @@
 package com.renault.garagesapi;
 
 import com.renault.garagesapi.dto.VehicleDto;
-import com.renault.garagesapi.enums.TypeCarburant;
+import com.renault.garagesapi.enums.FuelType;
 import com.renault.garagesapi.repository.GarageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -29,7 +29,7 @@ public class GaragesApiApplication {
                     1L,
                     "Clio 4",
                     Year.of(2025),
-                    TypeCarburant.DIESEL,
+                    FuelType.DIESEL,
                     null
             );
             kafkaTemplate.send("vehicule_creation", vehicule);
