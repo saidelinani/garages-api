@@ -5,9 +5,9 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class KafkaVehiculeListener {
+public class KafkaVehicleListener {
 
-    @KafkaListener(topics = "vehicule_creation", groupId = "groupId")
+    @KafkaListener(topics = "vehicle_creation", groupId = "groupId")
     public void kafkaListener(VehicleDto vehicleDto) {
         System.out.println("Véhicule reçu: " + vehicleDto);
     }

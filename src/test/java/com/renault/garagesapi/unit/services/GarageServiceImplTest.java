@@ -113,7 +113,7 @@ class GarageServiceImplTest {
 
         assertThatExceptionOfType(ResourceNotFoundException.class)
                 .isThrownBy(() -> garageService.updateGarage(garageId, garageDto))
-                .withMessage("Garage non trouvé");
+                .withMessage("Garage not found");
 
         verify(garageRepository).findById(garageId);
         verify(garageMapper, never()).toEntity(any());
@@ -150,7 +150,7 @@ class GarageServiceImplTest {
 
         assertThatExceptionOfType(GarageHasVehiclesException.class)
                 .isThrownBy(() -> garageService.deleteGarage(garageId))
-                .withMessage("Impossible de supprimer un garage contenant des véhicules");
+                .withMessage("Cannot delete a garage that contains vehicles");
 
         verify(garageRepository).findById(garageId);
         verify(garageRepository, never()).deleteById(anyLong());
@@ -186,7 +186,7 @@ class GarageServiceImplTest {
 
         assertThatExceptionOfType(ResourceNotFoundException.class)
                 .isThrownBy(() -> garageService.deleteGarage(garageId))
-                .withMessage("Garage non trouvé");
+                .withMessage("Garage not found");
 
         verify(garageRepository).findById(garageId);
         verify(garageMapper, never()).toDto(any());

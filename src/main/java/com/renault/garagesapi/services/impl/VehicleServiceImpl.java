@@ -2,8 +2,8 @@ package com.renault.garagesapi.services.impl;
 
 import com.renault.garagesapi.dtos.VehicleDto;
 import com.renault.garagesapi.entities.Vehicle;
-import com.renault.garagesapi.kafka.producer.VehiculeEventsPublisher;
-import com.renault.garagesapi.exceptions.GarageFullException;
+import com.renault.garagesapi.kafka.producer.VehicleEventsPublisher;
+import com.renault.garagesapi.exceptions.GarageQuotaReachedException;
 import com.renault.garagesapi.exceptions.ResourceNotFoundException;
 import com.renault.garagesapi.mappers.VehicleMapper;
 import com.renault.garagesapi.repositories.VehicleRepository;
@@ -23,10 +23,10 @@ public class VehicleServiceImpl implements IVehicleService {
     private final VehicleRepository vehicleRepository;
     private final VehicleMapper vehicleMapper;
     private final IGarageService garageService;
-    private final VehiculeEventsPublisher publisher;
+    private final VehicleEventsPublisher publisher;
 
     public VehicleServiceImpl(VehicleRepository vehicleRepository, VehicleMapper vehicleMapper,
-                              IGarageService garageService, VehiculeEventsPublisher publisher, Repositories repositories) {
+                              IGarageService garageService, VehicleEventsPublisher publisher, Repositories repositories) {
         this.vehicleRepository = vehicleRepository;
         this.vehicleMapper = vehicleMapper;
         this.garageService = garageService;
@@ -38,11 +38,10 @@ public class VehicleServiceImpl implements IVehicleService {
     public VehicleDto addVehicule(VehicleDto vehicleDto) {
 
         Vehicle vehicle = vehicleMapper.toEntity(vehicleDto);
-        Vehicle savedVehicle = vehicleRepository.save(vehicle);
-        VehicleDto savedVehicleDto = vehicleMapper.toDto(savedVehicle);
+        VehicleDto savedVehicleDto = vehicleMapper.toDto(vehicleRepository.save(vehicle));
 
         // Publier l'evenement
-        publisher.publishVehiculeCreated(savedVehicleDto);
+        publisher.publishVehicleCreated(savedVehicleDto);
 
         return savedVehicleDto;
     }
@@ -54,7 +53,7 @@ public class VehicleServiceImpl implements IVehicleService {
         var garage = garageService.findGarageById(garageId);
 
         if (garage.getVehicles().size() >= MAX_VEHICLES_PER_GARAGE) {
-            throw new GarageFullException(String.format("Le garage a atteint sa capacité maximale de %d véhicules", MAX_VEHICLES_PER_GARAGE));
+            throw new GarageQuotaReachedException(String.format("The garage has reached its maximum capacity of %d vehicles", MAX_VEHICLES_PER_GARAGE));
         }
 
         Vehicle vehicle = vehicleMapper.toEntity(vehicleDto);
@@ -64,7 +63,7 @@ public class VehicleServiceImpl implements IVehicleService {
         VehicleDto savedVehicleDto = vehicleMapper.toDto(savedVehicle);
 
         // Publier l'evenement
-        publisher.publishVehiculeCreated(savedVehicleDto);
+        publisher.publishVehicleCreated(savedVehicleDto);
 
         return savedVehicleDto;
     }
@@ -83,7 +82,7 @@ public class VehicleServiceImpl implements IVehicleService {
     @Transactional
     public void deleteVehicule(Long id) {
         if (!vehicleRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Véhicule non trouvé");
+            throw new ResourceNotFoundException("Vehicle not found");
         }
         vehicleRepository.deleteById(id);
     }
@@ -92,7 +91,7 @@ public class VehicleServiceImpl implements IVehicleService {
     @Transactional(readOnly = true)
     public VehicleDto getVehiculeById(Long id) {
         var vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Véhicule non trouvé"));
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found"));
         return vehicleMapper.toDto(vehicle);
     }
 

@@ -5,16 +5,16 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VehiculeEventsPublisher {
+public class VehicleEventsPublisher {
 
-    private static final String TOPIC = "vehicule_creation";
+    private static final String TOPIC = "vehicle_creation";
     private final KafkaTemplate<Long, VehicleDto> kafkaTemplate;
 
-    public VehiculeEventsPublisher(KafkaTemplate<Long, VehicleDto> kafkaTemplate) {
+    public VehicleEventsPublisher(KafkaTemplate<Long, VehicleDto> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void publishVehiculeCreated(VehicleDto vehicleDto) {
+    public void publishVehicleCreated(VehicleDto vehicleDto) {
         Long key = vehicleDto.id();
         kafkaTemplate.send(TOPIC, key, vehicleDto);
     }

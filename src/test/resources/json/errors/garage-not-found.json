@@ -1,5 +1,5 @@
 {
-  "message": "Garage non trouvé",
+  "message": "Garage not found",
   "status": 404,
   "error": "Resource not found"
 }

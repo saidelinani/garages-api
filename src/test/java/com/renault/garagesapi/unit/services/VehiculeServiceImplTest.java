@@ -4,9 +4,9 @@ import com.renault.garagesapi.dtos.VehicleDto;
 import com.renault.garagesapi.entities.Garage;
 import com.renault.garagesapi.entities.Vehicle;
 import com.renault.garagesapi.enums.FuelType;
-import com.renault.garagesapi.exceptions.GarageFullException;
+import com.renault.garagesapi.exceptions.GarageQuotaReachedException;
 import com.renault.garagesapi.exceptions.ResourceNotFoundException;
-import com.renault.garagesapi.kafka.producer.VehiculeEventsPublisher;
+import com.renault.garagesapi.kafka.producer.VehicleEventsPublisher;
 import com.renault.garagesapi.mappers.VehicleMapper;
 import com.renault.garagesapi.repositories.VehicleRepository;
 import com.renault.garagesapi.services.IGarageService;
@@ -45,7 +45,7 @@ class VehiculeServiceImplTest {
     private IGarageService garageService;
 
     @Mock
-    private VehiculeEventsPublisher publisher;
+    private VehicleEventsPublisher publisher;
 
     @InjectMocks
     private VehicleServiceImpl vehiculeService;
@@ -54,7 +54,7 @@ class VehiculeServiceImplTest {
     private Vehicle vehicle;
     private Garage garage;
 
-    public static final int MAX_VEHICULES_PAR_GARAGE = 2;
+    public static final int MAX_VEHICLES_PER_GARAGE = 2;
 
     @BeforeEach
     void setUp() {
@@ -96,7 +96,7 @@ class VehiculeServiceImplTest {
         verify(vehicleMapper).toEntity(vehicleDto);
         verify(vehicleRepository).save(vehicle);
         verify(vehicleMapper).toDto(vehicle);
-        verify(publisher).publishVehiculeCreated(vehicleDto);
+        verify(publisher).publishVehicleCreated(vehicleDto);
     }
 
 
@@ -130,9 +130,9 @@ class VehiculeServiceImplTest {
 
         when(garageService.findGarageById(garageId)).thenReturn(garage);
 
-        assertThatExceptionOfType(GarageFullException.class)
+        assertThatExceptionOfType(GarageQuotaReachedException.class)
                 .isThrownBy(() -> vehiculeService.addVehiculeToGarage(garageId, vehicleDto))
-                .withMessage("Le garage a atteint sa capacité maximale de "+MAX_VEHICULES_PAR_GARAGE+" véhicules");
+                .withMessage(String.format("The garage has reached its maximum capacity of %d vehicles", MAX_VEHICLES_PER_GARAGE));
 
         verify(garageService).findGarageById(garageId);
         verify(vehicleMapper, never()).toEntity(any());
@@ -180,7 +180,7 @@ class VehiculeServiceImplTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                 () -> vehiculeService.getVehiculeById(vehiculeId));
 
-        assertEquals("Véhicule non trouvé", exception.getMessage());
+        assertEquals("Vehicle not found", exception.getMessage());
 
         verify(vehicleRepository).findById(vehiculeId);
         verify(vehicleMapper, never()).toDto(any());

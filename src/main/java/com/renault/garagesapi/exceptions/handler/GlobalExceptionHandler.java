@@ -1,7 +1,7 @@
 package com.renault.garagesapi.exceptions.handler;
 
 import com.renault.garagesapi.exceptions.AccessoryAlreadyAssignedException;
-import com.renault.garagesapi.exceptions.GarageFullException;
+import com.renault.garagesapi.exceptions.GarageQuotaReachedException;
 import com.renault.garagesapi.exceptions.GarageHasVehiclesException;
 import com.renault.garagesapi.exceptions.ResourceNotFoundException;
 import com.renault.garagesapi.exceptions.dto.ErrorResponse;
@@ -108,9 +108,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(GarageFullException.class)
+    @ExceptionHandler(GarageQuotaReachedException.class)
     public ResponseEntity<ErrorResponse> handleGarageFullException(
-            GarageFullException ex,
+            GarageQuotaReachedException ex,
             WebRequest request) {
 
         ErrorResponse errorResponse = ErrorResponse.of(

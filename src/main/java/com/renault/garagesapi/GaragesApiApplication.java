@@ -32,7 +32,7 @@ public class GaragesApiApplication {
                     FuelType.DIESEL,
                     null
             );
-            kafkaTemplate.send("vehicule_creation", vehicule);
+            kafkaTemplate.send("vehicle_creation", vehicule);
         };
     }
 }

@@ -57,7 +57,7 @@ public class GarageServiceImpl implements IGarageService {
         var existingGarage = findGarageById(id);
 
         if (!existingGarage.getVehicles().isEmpty()) {
-            throw new GarageHasVehiclesException("Impossible de supprimer un garage contenant des véhicules");
+            throw new GarageHasVehiclesException("Cannot delete a garage that contains vehicles");
         }
 
         garageRepository.deleteById(id);
@@ -87,6 +87,6 @@ public class GarageServiceImpl implements IGarageService {
     @Transactional(readOnly = true)
     public Garage findGarageById(Long id) {
         return garageRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Garage non trouvé"));
+                .orElseThrow(() -> new ResourceNotFoundException("Garage not found"));
     }
 }

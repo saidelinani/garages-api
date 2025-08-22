@@ -1,5 +1,5 @@
 {
-  "message": "Impossible de supprimer un garage contenant des véhicules",
+  "message": "Cannot delete a garage that contains vehicles",
   "status": 400,
   "error": "Bad Request"
 }

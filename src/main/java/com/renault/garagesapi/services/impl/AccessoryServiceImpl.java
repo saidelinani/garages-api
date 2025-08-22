@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,7 +82,7 @@ public class AccessoryServiceImpl implements IAccessoryService {
     @Override
     public Page<AccessoryDto> getAllAccessoires(Pageable pageable) {
         return accessoryRepository.findAll(pageable)
-                        .map(accessoryMapper::toDto);
+                .map(accessoryMapper::toDto);
     }
 
     @Override
@@ -96,13 +97,14 @@ public class AccessoryServiceImpl implements IAccessoryService {
     }
 
     @Transactional(readOnly = true)
-    private Accessory findAccessoireById(Long id) {
+    public Accessory findAccessoireById(Long id) {
         return accessoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Accessoire non trouvé"));
+                .orElseThrow(() -> new ResourceNotFoundException("Accessory not found"));
     }
 
     @Transactional
-    @Override public void attachAccessoireToVehicule(Long accessoireId, Long vehiculeId) {
+    @Override
+    public void attachAccessoireToVehicule(Long accessoireId, Long vehiculeId) {
 
         Vehicle vehicle = vehicleMapper.toEntity(vehiculeService.getVehiculeById(vehiculeId));
 
@@ -110,8 +112,7 @@ public class AccessoryServiceImpl implements IAccessoryService {
 
         // Vérifier si l'accessoire n'est pas déjà associé à un véhicule
         if (accessory.getVehicle() != null) {
-            throw new AccessoryAlreadyAssignedException("L'accessoire est déjà associé au véhicule avec l'ID " +
-                            accessory.getVehicle().getId());
+            throw new AccessoryAlreadyAssignedException(String.format("The accessory is already associated with the vehicle with ID %d", accessory.getVehicle().getId()));
         }
 
         accessory.setVehicle(vehicle);
